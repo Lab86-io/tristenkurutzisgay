@@ -1,0 +1,12 @@
+.git
+.gitignore
+.github
+node_modules
+.output
+.tanstack
+.vscode
+Dockerfile
+.dockerignore
+README.md
+AGENTS.md
+*.log

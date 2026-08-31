@@ -1,4 +1,4 @@
-name: Deploy to Railway
+name: Build and Deploy
 
 on:
   push:
@@ -6,31 +6,66 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  IMAGE: ghcr.io/lab86-io/tristenkurutzisgay
+
 jobs:
-  build-and-deploy:
+  build-test-deploy:
     runs-on: blacksmith-4vcpu-ubuntu-2404
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Lint
+        run: pnpm check
+
       - name: Build
         run: pnpm build
 
-      - name: Deploy to Railway
-        uses: bcomnes/gha-railway-deploy@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
         with:
-          railway_token: ${{ secrets.RAILWAY_TOKEN }}
-          project: tristenkurutzisgay
-          service: web
-          environment: production
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: ${{ github.event_name == 'push' }}
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Install Railway CLI
+        if: github.event_name == 'push'
+        run: npm install --global @railway/cli
+
+      - name: Deploy to Railway
+        if: github.event_name == 'push'
+        run: railway redeploy --from-source --yes
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: d95e94a8-0e00-4514-acff-4727847d313c
+          RAILWAY_SERVICE_ID: d6466530-0739-453b-8adc-8b65e9fee1ea
+          RAILWAY_ENVIRONMENT_ID: 7d3fccaf-a817-40a1-8999-5c66f622f32d
