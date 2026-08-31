@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ContrastToggle } from "./ContrastToggle";
 
 const NAV_ITEMS = [
 	{ label: "ABOUT", href: "#about" },
@@ -42,16 +43,7 @@ export function Banner() {
 							{item.label}
 						</a>
 					))}
-					<label className="flex cursor-pointer select-none items-center gap-1.5 text-xs tracking-widest text-white/60 transition-colors hover:text-white">
-						<input
-							type="checkbox"
-							id="contrast"
-							checked={contrast}
-							onChange={(e) => setContrast(e.target.checked)}
-							className="h-[0.85em] w-[0.85em] cursor-pointer accent-white"
-						/>
-						CONTRAST
-					</label>
+					<ContrastToggle checked={contrast} onCheckedChange={setContrast} />
 				</nav>
 			</div>
 		</header>
