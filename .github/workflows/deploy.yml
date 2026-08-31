@@ -55,6 +55,21 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      # GHCR defaults new container packages to private regardless of repo
+      # visibility; Railway pulls the image anonymously, so flip it to public.
+      # Idempotent; continue-on-error so a first-run API race doesn't fail CI.
+      - name: Set GHCR package visibility to public
+        if: github.event_name == 'push'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api --method PATCH \
+            "/orgs/${{ github.repository_owner }}/packages/container/tristenkurutzisgay" \
+            -f visibility=public \
+            && echo "Package visibility set to public" \
+            || echo "::warning::Could not set package visibility — may need manual fix in GHCR UI"
+
       - name: Install Railway CLI
         if: github.event_name == 'push'
         run: npm install --global @railway/cli
