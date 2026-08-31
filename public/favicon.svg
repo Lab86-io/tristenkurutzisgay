@@ -1,0 +1,17 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    text { fill: white; }
+    @media (prefers-color-scheme: light) {
+      text { fill: #0a0a0a; }
+    }
+  </style>
+  <text
+    x="50"
+    y="72"
+    text-anchor="middle"
+    font-family="GT Walsheim Pro Black, Arial Black, sans-serif"
+    font-weight="900"
+    font-size="52"
+    letter-spacing="-4"
+  >TK</text>
+</svg>
