@@ -6,8 +6,9 @@ const EXPERIENCES = [
 		tags: ["JAVA", "PLAYWRIGHT", "GITLAB CI/CD"],
 		period: "Jun 2026 – Aug 2026",
 		details: [
-			"Built a Java test orchestration platform from scratch for running suites across teams.",
-			"Added Playwright-based end-to-end suites to GitLab CI/CD pipelines.",
+			"Designed and built a Java test orchestration platform from the ground up as a solo project, replacing a legacy ReadyAPI setup.",
+			"Migrated 255 API and message queue tests to Playwright, improving maintainability and enabling programmatic test control.",
+			"Integrated the platform into GitLab CI/CD pipelines to automate weekly test execution across deployment workflows.",
 		],
 	},
 	{
@@ -17,7 +18,8 @@ const EXPERIENCES = [
 		tags: ["C#", ".NET", "REACT"],
 		period: "Jan 2026 – Jun 2026",
 		details: [
-			"Frontend development on React applications backed by C#/.NET services.",
+			"Contributing to full-stack applications with a C# (.NET) backend and React frontend on a cross-functional engineering team.",
+			"Resolving frontend tickets for an e-commerce platform and internal applications — UI bugs, performance issues, edge cases.",
 		],
 	},
 	{
@@ -26,7 +28,11 @@ const EXPERIENCES = [
 		role: "FULL-STACK SOFTWARE INTERN",
 		tags: ["C#", ".NET", "REACT"],
 		period: "Sep 2025 – Dec 2025",
-		details: ["Full-stack work across C#/.NET services and React frontends."],
+		details: [
+			"Extended full-stack applications with features and fixes across C# (.NET) and React stacks.",
+			"Led a refactor initiative to improve maintainability and scalability through stronger object-oriented design patterns.",
+			"Reduced React warning count from 250+ to zero, improving debugging efficiency and creating a cleaner CI/CD pipeline.",
+		],
 	},
 	{
 		company: "M&T Bank",
@@ -35,7 +41,8 @@ const EXPERIENCES = [
 		tags: ["ANGULAR", "FIGMA", "REST APIS"],
 		period: "Jun 2025 – Aug 2025",
 		details: [
-			"Built Angular frontend features against REST APIs, working from Figma designs.",
+			"Designed and prototyped comprehensive dashboards in Figma to improve the business workflow for viewing credit history disputes.",
+			"Implemented Angular services and components to streamline bank and 3rd-party REST API information in one location.",
 		],
 	},
 	{
