@@ -15,7 +15,12 @@ export function Banner() {
 
 	useEffect(() => {
 		try {
-			setContrast(localStorage.getItem(CONTRAST_KEY) === "true");
+			const stored = localStorage.getItem(CONTRAST_KEY);
+			if (stored !== null) {
+				setContrast(stored === "true");
+			} else if (window.matchMedia("(prefers-contrast: more)").matches) {
+				setContrast(true);
+			}
 		} catch {
 			// storage can be blocked; the toggle still works for the session
 		}

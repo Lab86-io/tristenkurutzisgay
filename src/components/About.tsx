@@ -1,3 +1,5 @@
+import { TypingGreeting } from "./TypingGreeting";
+
 const SKILLS_ROW_1 = [
 	"Angular",
 	"C",
@@ -23,7 +25,8 @@ export function About() {
 	return (
 		<section id="about" className="scroll-mt-24">
 			<h1 className="font-myfont text-5xl text-white">
-				<span className="animate-typing">Hey!</span>
+				<span className="sr-only">Hey! I'm Tristen.</span>
+				<TypingGreeting />
 			</h1>
 			<h2 className="section-title mt-10">WHO AM I?</h2>
 			<p className="section-sub max-w-3xl leading-relaxed">

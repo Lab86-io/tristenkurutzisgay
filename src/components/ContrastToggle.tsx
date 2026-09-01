@@ -10,7 +10,10 @@ export function ContrastToggle({
 	onCheckedChange,
 }: ContrastToggleProps) {
 	return (
-		<span className="flex select-none items-center gap-2 text-xs tracking-widest text-white/60 transition-colors hover:text-white">
+		<label
+			htmlFor="contrast"
+			className="flex select-none items-center gap-2 text-xs tracking-widest text-white/60 transition-colors hover:text-white"
+		>
 			<Switch.Root
 				id="contrast"
 				className="contrast-toggle"
@@ -21,6 +24,6 @@ export function ContrastToggle({
 				<Switch.Thumb className="contrast-toggle-thumb" />
 			</Switch.Root>
 			CONTRAST
-		</span>
+		</label>
 	);
 }

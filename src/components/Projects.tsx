@@ -28,8 +28,8 @@ const PROJECTS = [
 		subtitle: "PERSONAL PROJECT",
 		note: null,
 		description:
-			"My personal portfolio site, built in SvelteKit with Tailwind and GT Walsheim. Still a work in progress.",
-		tags: ["SVELTEKIT", "TYPESCRIPT", "TAILWIND", "SCSS"],
+			"My personal portfolio site, built with TanStack Start (React), Tailwind, and GT Walsheim. Still a work in progress.",
+		tags: ["TANSTACK START", "REACT", "TYPESCRIPT", "TAILWIND"],
 		links: [
 			{
 				label: "GitHub ↗",

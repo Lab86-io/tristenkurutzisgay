@@ -10,8 +10,14 @@ export const Route = createFileRoute("/")({ component: Home });
 function Home() {
 	return (
 		<div id="top" className="min-h-screen">
+			<a href="#main" className="skip-link">
+				Skip to content
+			</a>
 			<Banner />
-			<main className="container-main grid grid-cols-1 gap-24 pb-24 pt-8 2xl:grid-cols-2 2xl:gap-x-16">
+			<main
+				id="main"
+				className="container-main grid grid-cols-1 gap-24 pb-24 pt-8 2xl:grid-cols-2 2xl:gap-x-16"
+			>
 				<About />
 				<Experience />
 				<div className="2xl:col-span-2">

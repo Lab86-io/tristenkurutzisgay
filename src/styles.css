@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: 'GT Walsheim Pro Black';
-  src: url('/fonts/GT-Walsheim-Pro-Black.ttf') format('truetype');
+  src: url('/fonts/GT-Walsheim-Pro-Black.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -20,6 +20,29 @@ body,
 
 html {
   scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+:focus-visible {
+  outline: 2px solid #fde047;
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip-link:focus {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 50;
+  padding: 0.5rem 1rem;
+  background-color: #000;
+  color: #fff;
+  font-size: 0.875rem;
+  text-decoration: none;
 }
 
 body {
@@ -161,6 +184,37 @@ body {
   white-space: nowrap;
 }
 
+.exp-details summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.exp-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.exp-chevron {
+  font-size: 1rem;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.exp-details[open] .exp-chevron {
+  transform: rotate(45deg);
+}
+
+.exp-bullets {
+  margin: 1rem 0 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.55);
+}
+
 .project-card {
   display: flex;
   flex-direction: column;
@@ -261,15 +315,62 @@ body {
   flex-shrink: 0;
 }
 
-/* typing animation on the greeting */
-@keyframes typing {
-  0% {
-    width: 0%;
-    visibility: hidden;
+.contact-value {
+  flex: 1;
+}
+
+.copy-btn {
+  border-width: 0;
+  background-color: transparent;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.copy-btn:hover {
+  color: #fff;
+}
+
+/* respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
-  to {
-    width: 4ch;
+
+  .typing-text {
+    animation: none;
   }
+
+  .nav-btn,
+  .project-card,
+  .project-link,
+  .contact-link,
+  .contrast-toggle,
+  .contrast-toggle-thumb,
+  .exp-chevron,
+  .copy-btn {
+    transition: none;
+  }
+}
+
+/* typing animation on the greeting (JS typewriter in TypingGreeting.tsx) */
+.typing-line {
+  display: inline-block;
+}
+
+.typing-text {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid #fff;
+  line-height: 1;
+  padding-bottom: 0.12em;
+  vertical-align: -0.05em;
+  animation: blink 0.7s step-end infinite;
 }
 
 @keyframes blink {
@@ -279,29 +380,6 @@ body {
   to {
     border-color: #fff;
   }
-}
-
-@keyframes hideCursor {
-  to {
-    border-color: transparent;
-  }
-}
-
-.animate-typing {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  border-right: 2px solid #fff;
-  width: 4ch;
-  /* line-height 0.75 from .font-myfont clips descenders ("y"); give the
-     clip box enough vertical room for the glyphs */
-  line-height: 1;
-  padding-bottom: 0.12em;
-  vertical-align: -0.05em;
-  animation:
-    typing 0.75s steps(6) forwards,
-    blink 0.7s step-end 4,
-    hideCursor 0s linear 2.8s forwards;
 }
 
 /* contrast toggle switch (radix Switch.Root / Switch.Thumb) */
@@ -366,6 +444,9 @@ body {
 .high-contrast .accordion-role,
 .high-contrast .accordion-company,
 .high-contrast .accordion-dates,
+.high-contrast .exp-bullets,
+.high-contrast .exp-chevron,
+.high-contrast .copy-btn,
 .high-contrast .section-title,
 .high-contrast label {
   color: #fff;
@@ -384,7 +465,8 @@ body {
 }
 
 .high-contrast .nav-btn:hover,
-.high-contrast .project-link:hover {
+.high-contrast .project-link:hover,
+.high-contrast .copy-btn:hover {
   color: #fde047;
 }
 
@@ -397,7 +479,7 @@ body {
   color: #fde047;
 }
 
-.high-contrast .animate-typing {
+.high-contrast .typing-text {
   border-right-color: #fff;
 }
 
