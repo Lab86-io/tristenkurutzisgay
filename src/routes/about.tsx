@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { StatBars } from "#/components/gacha/CardDetail";
 import { OperatorExam } from "#/components/gacha/OperatorExam";
 import { CHARACTER_CARD } from "#/data/cards";
+import { useCards } from "#/hooks/useCards";
 import { useGachaSession } from "#/hooks/useGacha";
 import { ACHIEVEMENTS } from "#/lib/achievements";
 
@@ -27,6 +28,8 @@ const AFFILIATIONS = [
 
 function DossierPage() {
 	const { state } = useGachaSession();
+	const { byId } = useCards();
+	const characterCard = byId.get("tk-character") ?? CHARACTER_CARD;
 	return (
 		<div className="dossier-page">
 			<h1 className="page-title font-myfont">DOSSIER</h1>
@@ -56,7 +59,7 @@ function DossierPage() {
 
 				<section className="panel">
 					<h2 className="panel-title">OPERATOR STATS</h2>
-					<StatBars stats={CHARACTER_CARD.stats ?? []} />
+					<StatBars stats={characterCard.stats ?? []} />
 				</section>
 
 				<section className="panel">

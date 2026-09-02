@@ -1,7 +1,7 @@
 import { SignInButton } from "@clerk/tanstack-react-start";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ALL_CARDS } from "#/data/cards";
+import { useCards } from "#/hooks/useCards";
 import { useGachaSession, useSendMessage } from "#/hooks/useGacha";
 import { CONTACT_REWARD } from "#/lib/gacha";
 
@@ -53,6 +53,7 @@ const CHANNELS: Channel[] = [
 
 function CommsPage() {
 	const { status, state } = useGachaSession();
+	const { cards } = useCards();
 	const sendMessage = useSendMessage();
 	const [copied, setCopied] = useState(false);
 	const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -82,7 +83,7 @@ function CommsPage() {
 	};
 
 	const uniqueOwned = Object.keys(state.owned).length;
-	const roleCards = ALL_CARDS.filter((card) => card.type === "ROLE");
+	const roleCards = cards.filter((card) => card.type === "ROLE");
 	const rolesOwned = roleCards.every((card) => state.owned[card.id]);
 	const resumeUnlocked = rolesOwned;
 

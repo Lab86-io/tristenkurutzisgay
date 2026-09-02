@@ -1,4 +1,4 @@
-import { ALL_CARDS, PULLABLE_BY_RARITY, RARITY_META, RARITY_ORDER, type Rarity } from "../src/data/cards";
+import { ALL_CARDS, CARD_POOL, RARITY_META, RARITY_ORDER, type Rarity } from "../src/data/cards";
 import {
 	CONTACT_REWARD,
 	MINE_DAILY_CAP,
@@ -10,8 +10,10 @@ import {
 	TEN_PULL_COST,
 } from "../src/lib/gacha";
 import { evaluateAchievements, type Achievement } from "./achievements";
+import { requireAdmin } from "./cards";
 import { v } from "convex/values";
 import { mutation, query, type MutationCtx, type QueryCtx } from "./_generated/server";
+import { internal } from "./_generated/api";
 import type { Doc, Id } from "./_generated/dataModel";
 
 type PlayerDoc = Doc<"players">;
@@ -85,7 +87,18 @@ async function ensurePlayer(ctx: MutationCtx): Promise<PlayerDoc> {
 	return (await ctx.db.get(playerId)) as PlayerDoc;
 }
 
-function rollCard(pitySr: number, pityUr: number) {
+interface PoolCard {
+	id: string;
+	type: "CHARACTER" | "ROLE" | "PROJECT" | "SKILL";
+	rarity: Rarity;
+	weight: number;
+}
+
+function rollCard(
+	poolsByRarity: Record<Rarity, PoolCard[]>,
+	pitySr: number,
+	pityUr: number,
+): PoolCard {
 	let rarity: Rarity;
 	if (pityUr >= PITY_UR - 1) {
 		rarity = "UR";
@@ -97,7 +110,13 @@ function rollCard(pitySr: number, pityUr: number) {
 			rarity = "SR";
 		}
 	}
-	const pool = PULLABLE_BY_RARITY[rarity];
+	const pool = poolsByRarity[rarity];
+	if (pool.length === 0) {
+		// rarity tier has no active cards — degrade to whatever exists
+		const anyPool = Object.values(poolsByRarity).filter((p) => p.length > 0);
+		const fallback = anyPool[anyPool.length - 1] ?? [];
+		return fallback[fallback.length - 1];
+	}
 	const total = pool.reduce((sum, card) => sum + card.weight, 0);
 	let roll = Math.random() * total;
 	for (const card of pool) {
@@ -170,8 +189,43 @@ export const summon = mutation({
 			characterAcquired = true;
 		}
 
+		// card pool comes from the database (admin-managed), falling back to the
+		// seed data if the table hasn't been seeded yet
+		const cardDocs = await ctx.db.query("cards").collect();
+		const characterCard: PoolCard | undefined = cardDocs.length
+			? (() => {
+					const doc = cardDocs.find((c) => c.cardId === FREE_CHARACTER_ID);
+					return doc
+						? { id: doc.cardId, type: doc.type, rarity: doc.rarity, weight: doc.weight }
+						: undefined;
+				})()
+			: ALL_CARDS.find((card) => card.id === FREE_CHARACTER_ID);
+		const pool: PoolCard[] = cardDocs.length
+			? cardDocs
+					.filter((doc) => doc.active !== false && doc.type !== "CHARACTER")
+					.map((doc) => ({
+						id: doc.cardId,
+						type: doc.type,
+						rarity: doc.rarity,
+						weight: doc.weight,
+					}))
+			: CARD_POOL.map((card) => ({
+						id: card.id,
+						type: card.type,
+						rarity: card.rarity,
+						weight: card.weight,
+				}));
+
+		const poolsByRarity: Record<Rarity, PoolCard[]> = {
+			UR: pool.filter((card) => card.rarity === "UR"),
+			SSR: pool.filter((card) => card.rarity === "SSR"),
+			SR: pool.filter((card) => card.rarity === "SR"),
+			R: pool.filter((card) => card.rarity === "R"),
+			C: pool.filter((card) => card.rarity === "C"),
+		};
+
 		for (let i = 0; i < args.count; i += 1) {
-			const card = rollCard(pitySr, pityUr);
+			const card = rollCard(poolsByRarity, pitySr, pityUr);
 			const existing = owned[card.id];
 
 			if (card.rarity === "UR") {
@@ -208,9 +262,15 @@ export const summon = mutation({
 		};
 		const unlocked: Achievement[] = evaluateAchievements(draft, {
 			summoned: results.map((result) => ({
-				rarity: ALL_CARDS.find((card) => card.id === result.cardId)?.rarity ?? "C",
+				rarity:
+					pool.find((card) => card.id === result.cardId)?.rarity ??
+					characterCard?.rarity ??
+					"UR",
 			})),
 			count: args.count,
+			allCards: [...pool, ...(characterCard ? [characterCard] : [])].map(
+				(card) => ({ id: card.id, type: card.type }),
+			),
 		});
 		let rewardTotal = 0;
 		const achievements = { ...player.achievements };
@@ -331,7 +391,8 @@ export const mine = mutation({
 	},
 });
 
-export const sendMessage = mutation({	args: {
+	export const sendMessage = mutation({
+	args: {
 		name: v.string(),
 		email: v.string(),
 		message: v.string(),
@@ -355,6 +416,13 @@ export const sendMessage = mutation({	args: {
 			createdAt: Date.now(),
 		});
 
+		// fire-and-forget email notification to the owner
+		await ctx.scheduler.runAfter(0, internal.emails.sendContactEmail, {
+			name,
+			email,
+			message,
+		});
+
 		let updated: PlayerDoc = {
 			...player,
 			contactRewarded: true,
@@ -365,6 +433,15 @@ export const sendMessage = mutation({	args: {
 		}
 		await ctx.db.replace(player._id, updated);
 		return { rewardGranted: rewardDue, reward: rewardDue ? CONTACT_REWARD : 0, state: publicState(updated) };
+	},
+});
+
+export const listMessages = query({
+	args: {},
+	handler: async (ctx) => {
+		await requireAdmin(ctx);
+		const docs = await ctx.db.query("messages").collect();
+		return docs.sort((a, b) => b.createdAt - a.createdAt);
 	},
 });
 

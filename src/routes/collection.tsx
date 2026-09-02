@@ -4,7 +4,8 @@ import { useState } from "react";
 import { CardDetail } from "#/components/gacha/CardDetail";
 import { GachaCardFace } from "#/components/gacha/GachaCard";
 import { Modal } from "#/components/gacha/Modal";
-import { ALL_CARDS, CARD_BY_ID, RARITY_ORDER, type Rarity } from "#/data/cards";
+import { RARITY_ORDER, type Rarity } from "#/data/cards";
+import { useCards } from "#/hooks/useCards";
 import { useGachaSession } from "#/hooks/useGacha";
 
 type CollectionSearch = { card?: string };
@@ -21,17 +22,16 @@ export const Route = createFileRoute("/collection")({
 
 function CollectionPage() {
 	const { status, state } = useGachaSession();
+	const { cards, byId } = useCards();
 	const search = Route.useSearch();
 	const navigate = useNavigate({ from: Route.fullPath });
 	const [rarityFilter, setRarityFilter] = useState<Rarity | "ALL">("ALL");
 	const [ownedOnly, setOwnedOnly] = useState(false);
 
 	const selected =
-		search.card && state.owned[search.card]
-			? CARD_BY_ID.get(search.card)
-			: undefined;
+		search.card && state.owned[search.card] ? byId.get(search.card) : undefined;
 
-	const visible = ALL_CARDS.filter(
+	const visible = cards.filter(
 		(card) =>
 			(rarityFilter === "ALL" || card.rarity === rarityFilter) &&
 			(!ownedOnly || state.owned[card.id]),
@@ -42,8 +42,8 @@ function CollectionPage() {
 			<h1 className="page-title font-myfont">INVENTORY</h1>
 			{status === "ready" ? (
 				<p className="section-sub">
-					{Object.keys(state.owned).length} of {ALL_CARDS.length} records
-					decrypted — keep pulling.
+					{Object.keys(state.owned).length} of {cards.length} records decrypted
+					— keep pulling.
 				</p>
 			) : (
 				<p className="section-sub">

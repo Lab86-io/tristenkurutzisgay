@@ -9,6 +9,8 @@
  */
 
 import type * as achievements from "../achievements.js";
+import type * as cards from "../cards.js";
+import type * as emails from "../emails.js";
 import type * as players from "../players.js";
 
 import type {
@@ -19,6 +21,8 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   achievements: typeof achievements;
+  cards: typeof cards;
+  emails: typeof emails;
   players: typeof players;
 }>;
 

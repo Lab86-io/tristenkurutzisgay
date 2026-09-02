@@ -24,6 +24,8 @@ export interface GachaCard {
 	links?: CardLink[];
 	note?: string;
 	stats?: CardStat[];
+	/** inactive cards are excluded from the pull pool (admin-controlled) */
+	active?: boolean;
 }
 
 export const RARITY_ORDER: Rarity[] = ["UR", "SSR", "SR", "R", "C"];
@@ -248,7 +250,7 @@ export const CARD_POOL: GachaCard[] = [
 		id: "skill-react",
 		name: "REACT",
 		type: "SKILL",
-		rarity: "SR",
+		rarity: "R",
 		weight: 1,
 		tagline: "FRAMEWORK",
 		description:
@@ -292,7 +294,7 @@ export const CARD_POOL: GachaCard[] = [
 		id: "skill-python",
 		name: "PYTHON",
 		type: "SKILL",
-		rarity: "SR",
+		rarity: "R",
 		weight: 1,
 		tagline: "LANGUAGE",
 		description:
@@ -303,7 +305,7 @@ export const CARD_POOL: GachaCard[] = [
 		id: "skill-go",
 		name: "GO",
 		type: "SKILL",
-		rarity: "SR",
+		rarity: "SSR",
 		weight: 1,
 		tagline: "LANGUAGE",
 		description:
@@ -315,7 +317,7 @@ export const CARD_POOL: GachaCard[] = [
 		id: "skill-angular",
 		name: "ANGULAR",
 		type: "SKILL",
-		rarity: "R",
+		rarity: "SSR",
 		weight: 1,
 		tagline: "FRAMEWORK",
 		description:
@@ -326,7 +328,7 @@ export const CARD_POOL: GachaCard[] = [
 		id: "skill-spring",
 		name: "SPRING",
 		type: "SKILL",
-		rarity: "R",
+		rarity: "SR",
 		weight: 1,
 		tagline: "FRAMEWORK",
 		description: "Coursework and platform work in the Java ecosystem.",
@@ -366,7 +368,7 @@ export const CARD_POOL: GachaCard[] = [
 		id: "skill-js",
 		name: "JAVASCRIPT",
 		type: "SKILL",
-		rarity: "R",
+		rarity: "C",
 		weight: 1,
 		tagline: "LANGUAGE",
 		description: "The language TypeScript keeps apologizing for.",

@@ -6,7 +6,8 @@ import { GachaCardFace } from "#/components/gacha/GachaCard";
 import { PullReveal } from "#/components/gacha/PullReveal";
 import { RatesModal } from "#/components/gacha/RatesModal";
 import { TypingGreeting } from "#/components/TypingGreeting";
-import { ALL_CARDS, CHARACTER_CARD } from "#/data/cards";
+import { CHARACTER_CARD } from "#/data/cards";
+import { useCards } from "#/hooks/useCards";
 import type { RevealCard } from "#/hooks/useGacha";
 import { useGachaSession, useResetSave, useSummon } from "#/hooks/useGacha";
 import { PITY_SR, PITY_UR, PULL_COST, TEN_PULL_COST } from "#/lib/gacha";
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/")({ component: SummonPage });
 
 function SummonPage() {
 	const { status, state } = useGachaSession();
+	const { cards, byId } = useCards();
 	const summon = useSummon();
 	const resetSave = useResetSave();
 	const [results, setResults] = useState<RevealCard[]>([]);
@@ -51,12 +53,15 @@ function SummonPage() {
 				) : state.characterAcquired ? (
 					<Link
 						to="/collection"
-						search={{ card: CHARACTER_CARD.id }}
+						search={{ card: (byId.get("tk-character") ?? CHARACTER_CARD).id }}
 						className="summon-operator"
 						aria-label="View operator card in inventory"
 					>
 						<span className="summon-operator-inner">
-							<GachaCardFace card={CHARACTER_CARD} state="owned" />
+							<GachaCardFace
+								card={byId.get("tk-character") ?? CHARACTER_CARD}
+								state="owned"
+							/>
 						</span>
 					</Link>
 				) : (
@@ -117,7 +122,7 @@ function SummonPage() {
 					<div>
 						<dt>INVENTORY</dt>
 						<dd>
-							{status === "ready" ? ownedCount : "—"}/{ALL_CARDS.length}
+							{status === "ready" ? ownedCount : "—"}/{cards.length}
 						</dd>
 					</div>
 					<div>

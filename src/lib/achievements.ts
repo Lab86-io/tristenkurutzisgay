@@ -12,6 +12,8 @@ export interface AchievementContext {
 	count?: 1 | 10;
 	streak?: number;
 	examPassed?: boolean;
+	/** card pool to evaluate set-completion against; falls back to the seed pool */
+	allCards?: Array<{ id: string; type: string }>;
 }
 
 export const ACHIEVEMENTS: Achievement[] = [
@@ -106,11 +108,12 @@ interface AchievementCheckState {
 
 function allOfTypeOwned(
 	state: AchievementCheckState,
-	type: (typeof ALL_CARDS)[number]["type"],
+	type: string,
+	pool: Array<{ id: string; type: string }>,
 ): boolean {
-	return ALL_CARDS.filter((card) => card.type === type).every(
-		(card) => state.owned[card.id],
-	);
+	return pool
+		.filter((card) => card.type === type)
+		.every((card) => state.owned[card.id]);
 }
 
 export function evaluateAchievements(
@@ -127,6 +130,7 @@ export function evaluateAchievements(
 	const summoned = context.summoned ?? [];
 	const rarities = new Set(summoned.map((result) => result.rarity));
 	const ownedCount = Object.keys(state.owned).length;
+	const pool = context.allCards ?? ALL_CARDS;
 
 	grant("first-contact", summoned.length > 0);
 	grant("first-ur", rarities.has("UR"));
@@ -145,12 +149,12 @@ export function evaluateAchievements(
 	);
 	grant("archive-10", ownedCount >= 10);
 	grant("archive-25", ownedCount >= 25);
-	grant("skill-tree", allOfTypeOwned(state, "SKILL"));
-	grant("shipped", allOfTypeOwned(state, "PROJECT"));
-	grant("hr-files", allOfTypeOwned(state, "ROLE"));
+	grant("skill-tree", allOfTypeOwned(state, "SKILL", pool));
+	grant("shipped", allOfTypeOwned(state, "PROJECT", pool));
+	grant("hr-files", allOfTypeOwned(state, "ROLE", pool));
 	grant(
 		"completionist",
-		ALL_CARDS.every((card) => state.owned[card.id]),
+		pool.every((card) => state.owned[card.id]),
 	);
 	grant("dedicated", (context.streak ?? 0) >= 7);
 	grant("operator-exam", context.examPassed === true);

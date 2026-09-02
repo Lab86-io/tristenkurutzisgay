@@ -2164,3 +2164,125 @@ html.gold-mode body {
 .orb-locked .orb-label {
   display: none;
 }
+
+/* ---------- admin console ---------- */
+
+.admin-page {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+.admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.admin-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.admin-card-id {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--dim);
+}
+
+.admin-card-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-dirty {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  color: var(--magenta);
+  border: 1px dashed var(--magenta);
+  padding: 0.15rem 0.45rem;
+}
+
+.admin-delete:hover {
+  border-color: var(--magenta);
+  color: var(--magenta);
+}
+
+.admin-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.85rem;
+}
+
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.admin-field > span {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  color: var(--dim);
+}
+
+.admin-field select.transmit-input,
+.admin-field option {
+  background-color: var(--panel-2);
+  color: var(--text);
+}
+
+.admin-checkbox {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.5rem !important;
+  padding-top: 1.4rem;
+}
+
+.admin-inbox {
+  margin-bottom: 2rem;
+}
+
+.admin-messages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.admin-message {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.9rem;
+}
+
+.admin-message-head {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--cyan);
+}
+
+.admin-message-body {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--text);
+  white-space: pre-wrap;
+}

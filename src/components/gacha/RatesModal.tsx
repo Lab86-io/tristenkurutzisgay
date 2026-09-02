@@ -1,4 +1,5 @@
-import { ALL_CARDS, RARITY_META, RARITY_ORDER } from "#/data/cards";
+import { RARITY_META, RARITY_ORDER } from "#/data/cards";
+import { useCards } from "#/hooks/useCards";
 import { PITY_SR, PITY_UR } from "#/lib/gacha";
 import { RarityOrbs } from "./GachaCard";
 import { Modal } from "./Modal";
@@ -10,6 +11,7 @@ export function RatesModal({
 	open: boolean;
 	onClose: () => void;
 }) {
+	const { cards } = useCards();
 	return (
 		<Modal open={open} onClose={onClose} label="Summon rates">
 			<h3 className="modal-title">SUMMON RATES</h3>
@@ -33,9 +35,7 @@ export function RatesModal({
 								<RarityOrbs rarity={rarity} size={9} />
 							</td>
 							<td>{(RARITY_META[rarity].rate * 100).toFixed(0)}%</td>
-							<td>
-								{ALL_CARDS.filter((card) => card.rarity === rarity).length}
-							</td>
+							<td>{cards.filter((card) => card.rarity === rarity).length}</td>
 							<td>{RARITY_META[rarity].dupeRefund}◈</td>
 						</tr>
 					))}
