@@ -17,7 +17,14 @@ import appCss from "../styles.css?url";
 
 const convexUrl = import.meta.env.VITE_CONVEX_URL ?? "";
 const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ?? "";
-const convexClient = convexUrl ? new ConvexReactClient(convexUrl) : null;
+if (!convexUrl) {
+	// without it the auth/game providers can't mount — fail loudly instead of
+	// rendering a providerless tree that crashes on useAuth
+	throw new Error(
+		"VITE_CONVEX_URL missing at build time — check .env.production",
+	);
+}
+const convexClient = new ConvexReactClient(convexUrl);
 
 const SITE_URL = "https://tristenkurutzisgay.tech";
 const TITLE = "TRISTEN KURUTZ — SUMMONS";
@@ -150,14 +157,12 @@ function NotFound() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-	const content = convexClient ? (
+	const content = (
 		<ClerkProvider publishableKey={clerkPublishableKey}>
 			<ConvexProviderWithClerk client={convexClient} useAuth={useAuth}>
 				{children}
 			</ConvexProviderWithClerk>
 		</ClerkProvider>
-	) : (
-		children
 	);
 
 	return (
