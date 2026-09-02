@@ -12,6 +12,9 @@ export const Route = createFileRoute("/collection")({
 	validateSearch: (search: Record<string, unknown>): CollectionSearch => ({
 		card: typeof search.card === "string" ? search.card : undefined,
 	}),
+	head: () => ({
+		meta: [{ title: "DATABASE — TRISTEN KURUTZ" }],
+	}),
 	component: CollectionPage,
 });
 

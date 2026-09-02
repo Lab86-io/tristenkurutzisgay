@@ -6,6 +6,24 @@ import {
 	RARITY_ORDER,
 	type Rarity,
 } from "#/data/cards";
+import { ACHIEVEMENT_BY_ID, evaluateAchievements } from "#/lib/achievements";
+import { sfx } from "#/lib/sfx";
+import { pushToast } from "#/lib/toasts";
+
+function announceUnlocks(ids: string[]): void {
+	if (!ids.length) return;
+	for (const id of ids) {
+		const achievement = ACHIEVEMENT_BY_ID.get(id);
+		if (achievement) {
+			pushToast(
+				`TROPHY — ${achievement.name}`,
+				`${achievement.description} +${achievement.reward}◈`,
+				"gold",
+			);
+		}
+	}
+	sfx.unlock();
+}
 
 export const START_CREDITS = 1000;
 export const PULL_COST = 100;
@@ -27,6 +45,8 @@ export interface GachaState {
 	owned: Record<string, OwnedEntry>;
 	characterAcquired: boolean;
 	stipendDate: string | null;
+	streak: number;
+	achievements: Record<string, number>;
 }
 
 export interface PullResult {
@@ -47,6 +67,8 @@ function defaultState(): GachaState {
 		owned: {},
 		characterAcquired: false,
 		stipendDate: null,
+		streak: 0,
+		achievements: {},
 	};
 }
 
@@ -64,6 +86,10 @@ function loadState(): GachaState {
 
 function todayKey(): string {
 	return new Date().toISOString().slice(0, 10);
+}
+
+function yesterdayKey(): string {
+	return new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
 }
 
 type Listener = () => void;
@@ -175,7 +201,7 @@ class GachaStore {
 			});
 		}
 
-		this.commit({
+		const nextState: GachaState = {
 			...this.state,
 			credits: credits - cost,
 			pitySr,
@@ -183,17 +209,58 @@ class GachaStore {
 			totalPulls,
 			owned,
 			characterAcquired,
+		};
+
+		const unlocked = evaluateAchievements(nextState, {
+			summoned: results,
+			count,
 		});
+		let rewardTotal = 0;
+		for (const achievement of unlocked) {
+			nextState.achievements = {
+				...nextState.achievements,
+				[achievement.id]: Date.now(),
+			};
+			rewardTotal += achievement.reward;
+		}
+		if (rewardTotal > 0) nextState.credits += rewardTotal;
+
+		this.commit(nextState);
+		announceUnlocks(unlocked.map((achievement) => achievement.id));
 		return results;
 	}
 	claimStipend(): boolean {
 		const today = todayKey();
 		if (this.state.stipendDate === today) return false;
-		this.commit({
+		const prev = this.state.stipendDate;
+		const streak = prev === yesterdayKey() ? this.state.streak + 1 : 1;
+
+		const nextState: GachaState = {
 			...this.state,
 			credits: this.state.credits + STIPEND_AMOUNT,
 			stipendDate: today,
-		});
+			streak,
+		};
+
+		const unlocked = evaluateAchievements(nextState, { streak });
+		let rewardTotal = 0;
+		for (const achievement of unlocked) {
+			nextState.achievements = {
+				...nextState.achievements,
+				[achievement.id]: Date.now(),
+			};
+			rewardTotal += achievement.reward;
+		}
+		if (rewardTotal > 0) nextState.credits += rewardTotal;
+
+		this.commit(nextState);
+		sfx.uplink();
+		pushToast(
+			"UPLINK CLAIMED",
+			`+${STIPEND_AMOUNT}◈ — STREAK ×${streak}`,
+			"green",
+		);
+		announceUnlocks(unlocked.map((achievement) => achievement.id));
 		return true;
 	}
 

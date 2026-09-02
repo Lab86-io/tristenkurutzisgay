@@ -1,8 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { StatBars } from "#/components/gacha/CardDetail";
 import { CHARACTER_CARD } from "#/data/cards";
+import { useGacha } from "#/hooks/useGacha";
+import { ACHIEVEMENTS } from "#/lib/achievements";
 
-export const Route = createFileRoute("/about")({ component: DossierPage });
+export const Route = createFileRoute("/about")({
+	head: () => ({
+		meta: [{ title: "DOSSIER — TRISTEN KURUTZ" }],
+	}),
+	component: DossierPage,
+});
 
 const AFFILIATIONS = [
 	{
@@ -18,6 +25,7 @@ const AFFILIATIONS = [
 ];
 
 function DossierPage() {
+	const state = useGacha();
 	return (
 		<div className="dossier-page">
 			<h1 className="page-title font-myfont">DOSSIER</h1>
@@ -77,6 +85,30 @@ function DossierPage() {
 					</ul>
 				</section>
 			</div>
+
+			<section className="panel dossier-trophies">
+				<h2 className="panel-title">COMMENDATIONS</h2>
+				<ul className="trophy-list">
+					{ACHIEVEMENTS.map((achievement) => {
+						const unlockedAt = state.achievements[achievement.id];
+						return (
+							<li
+								key={achievement.id}
+								className="trophy"
+								data-locked={unlockedAt ? undefined : true}
+							>
+								<span className="trophy-name">
+									{unlockedAt ? "★" : "☆"} {achievement.name}
+								</span>
+								<span className="trophy-desc">{achievement.description}</span>
+								<span className="trophy-reward">
+									{unlockedAt ? "UNLOCKED" : `+${achievement.reward}◈`}
+								</span>
+							</li>
+						);
+					})}
+				</ul>
+			</section>
 
 			<p className="dossier-foot">
 				Want the human-readable version?{" "}

@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ContrastToggle } from "#/components/ContrastToggle";
 import { claimStipend, useGacha } from "#/hooks/useGacha";
+import { sfx } from "#/lib/sfx";
 
 const NAV_ITEMS = [
 	{ label: "SUMMON", to: "/" },
@@ -16,6 +17,7 @@ export function Hud() {
 	const state = useGacha();
 	const [stipendReady, setStipendReady] = useState(false);
 	const [contrast, setContrast] = useState(false);
+	const [muted, setMuted] = useState(false);
 
 	useEffect(() => {
 		setStipendReady(
@@ -34,6 +36,10 @@ export function Hud() {
 		} catch {
 			// storage can be blocked; the toggle still works for the session
 		}
+	}, []);
+
+	useEffect(() => {
+		setMuted(sfx.isMuted());
 	}, []);
 
 	useEffect(() => {
@@ -65,6 +71,11 @@ export function Hud() {
 					))}
 				</nav>
 				<div className="hud-right">
+					{state.streak > 0 && (
+						<span className="streak-chip" title="Daily uplink streak">
+							STREAK ×{state.streak}
+						</span>
+					)}
 					{stipendReady && (
 						<button
 							type="button"
@@ -77,6 +88,15 @@ export function Hud() {
 					<span className="credits-chip">
 						<span aria-hidden="true">◈</span> {state.credits}
 					</span>
+					<button
+						type="button"
+						className="mute-btn"
+						onClick={() => setMuted(sfx.toggleMute())}
+						aria-pressed={muted}
+						aria-label={muted ? "Unmute sound effects" : "Mute sound effects"}
+					>
+						{muted ? "🔇" : "🔊"}
+					</button>
 					<ContrastToggle checked={contrast} onCheckedChange={setContrast} />
 				</div>
 			</div>

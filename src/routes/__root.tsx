@@ -9,6 +9,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
 import { Hud } from "#/components/gacha/Hud";
+import { Toasts } from "#/components/gacha/Toasts";
 import appCss from "../styles.css?url";
 
 const SITE_URL = "https://tristenkurutzisgay.tech";
@@ -123,6 +124,7 @@ function RootLayout() {
 				<span>© 2026 TRISTEN KURUTZ — NO REFUNDS ON PULLS</span>
 				<span className="dim">RATES ARE PUBLISHED. PITY IS REAL.</span>
 			</footer>
+			<Toasts />
 			<div className="scanlines" aria-hidden="true" />
 		</>
 	);

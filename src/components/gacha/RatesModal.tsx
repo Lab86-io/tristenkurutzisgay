@@ -39,7 +39,8 @@ export function RatesModal({
 				</tbody>
 			</table>
 			<p className="modal-foot">
-				First summon is free and always decrypts the operator card.
+				First summon is free and always decrypts the operator card. Trophies and
+				collection milestones pay out bonus credits — check DOSSIER.
 			</p>
 		</Modal>
 	);

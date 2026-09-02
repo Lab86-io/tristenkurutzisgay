@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import type { PullResult } from "#/lib/gacha";
 import { gachaStore, TEN_PULL_COST } from "#/lib/gacha";
+import { sfx } from "#/lib/sfx";
 import { CardBack, GachaCardFace } from "./GachaCard";
 
 const REVEAL_MS = 420;
@@ -30,15 +31,27 @@ export function PullReveal({
 	}, []);
 
 	useEffect(() => {
-		if (!results.length) return;
 		const dialog = dialogRef.current;
-		if (dialog && !dialog.open) dialog.showModal();
+		if (!dialog) return;
+		if (results.length && !dialog.open) dialog.showModal();
+		if (!results.length && dialog.open) dialog.close();
 		setRevealed(reducedMotion ? results.length : 0);
 	}, [results, reducedMotion]);
 
 	useEffect(() => {
 		if (!results.length || revealed >= results.length) return;
 		const next = results[revealed];
+		if (revealed > 0 || results.length === 1) {
+			if (
+				next.card.rarity === "UR" ||
+				next.card.rarity === "SSR" ||
+				next.card.rarity === "SR"
+			) {
+				sfx.revealBig(next.card.rarity);
+			} else {
+				sfx.reveal();
+			}
+		}
 		const delay =
 			next.card.rarity === "UR" || next.card.rarity === "SSR"
 				? BIG_REVEAL_MS
@@ -71,7 +84,9 @@ export function PullReveal({
 			<div className="pull-stage" data-flash={revealed > 0 && !done}>
 				<div className="pull-header">
 					<h2 className="pull-title">
-						{done ? "SUMMON COMPLETE" : "DECRYPTING RECORDS"}
+						{done
+							? "SUMMON COMPLETE"
+							: `DECRYPTING ${revealed + 1}/${results.length}`}
 					</h2>
 					{!done && (
 						<button type="button" className="btn btn-ghost" onClick={skip}>
@@ -99,7 +114,13 @@ export function PullReveal({
 							</div>
 						) : (
 							<div key={result.seq} className="pull-slot" aria-hidden="true">
-								<CardBack />
+								<CardBack
+									tell={
+										result.card.rarity === "UR" || result.card.rarity === "SSR"
+											? result.card.rarity
+											: undefined
+									}
+								/>
 							</div>
 						),
 					)}

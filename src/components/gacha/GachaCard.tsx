@@ -62,9 +62,9 @@ export function GachaCardFace({
 	);
 }
 
-export function CardBack() {
+export function CardBack({ tell }: { tell?: "SSR" | "UR" }) {
 	return (
-		<div className="gcard gcard-back" aria-hidden="true">
+		<div className="gcard gcard-back" data-tell={tell} aria-hidden="true">
 			<div className="gcard-top">
 				<span className="gcard-rarity">??</span>
 				<span className="gcard-type">⬢ DATA</span>

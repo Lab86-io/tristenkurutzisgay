@@ -1,7 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
-export const Route = createFileRoute("/comms")({ component: CommsPage });
+export const Route = createFileRoute("/comms")({
+	head: () => ({
+		meta: [{ title: "COMMS — TRISTEN KURUTZ" }],
+	}),
+	component: CommsPage,
+});
 
 const EMAIL = "tristenkurutz@gmail.com";
 
