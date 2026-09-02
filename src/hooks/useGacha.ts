@@ -163,3 +163,18 @@ export function useSendMessage(): (
 		}
 	};
 }
+
+export function useSubmitExam(): (
+	answers: number[],
+) => Promise<{ passed: boolean; unlocked: UnlockedAchievement[] }> {
+	const examMutation = useMutation(api.players.submitExam);
+	return async (answers) => {
+		try {
+			const response = await examMutation({ answers });
+			return { passed: response.passed, unlocked: response.unlocked };
+		} catch {
+			pushToast("EXAM ERROR", "Sign in first.", "magenta");
+			return { passed: false, unlocked: [] };
+		}
+	};
+}

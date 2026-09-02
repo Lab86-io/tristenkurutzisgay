@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { StatBars } from "#/components/gacha/CardDetail";
+import { OperatorExam } from "#/components/gacha/OperatorExam";
 import { CHARACTER_CARD } from "#/data/cards";
 import { useGachaSession } from "#/hooks/useGacha";
 import { ACHIEVEMENTS } from "#/lib/achievements";
@@ -29,7 +30,7 @@ function DossierPage() {
 	return (
 		<div className="dossier-page">
 			<h1 className="page-title font-myfont">DOSSIER</h1>
-			<p className="section-sub">&gt;_ CLASSIFIED: OPERATOR BACKGROUND.</p>
+			<p className="section-sub">The person behind the cards.</p>
 
 			<div className="dossier-grid">
 				<section className="panel">
@@ -87,7 +88,7 @@ function DossierPage() {
 			</div>
 
 			<section className="panel dossier-trophies">
-				<h2 className="panel-title">COMMENDATIONS</h2>
+				<h2 className="panel-title">COMMENDATIONS</h2>{" "}
 				<ul className="trophy-list">
 					{ACHIEVEMENTS.map((achievement) => {
 						const unlockedAt = state.achievements[achievement.id];
@@ -109,6 +110,8 @@ function DossierPage() {
 					})}
 				</ul>
 			</section>
+
+			<OperatorExam />
 
 			<p className="dossier-foot">
 				Want the human-readable version?{" "}

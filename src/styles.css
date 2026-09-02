@@ -319,8 +319,9 @@ body {
   text-transform: uppercase;
   text-decoration: none;
   text-align: center;
-  padding: 0.6rem 1.1rem;
+  padding: 0.6rem 1.3rem;
   border: 1px solid transparent;
+  border-radius: 999px;
   transition: transform 0.15s, box-shadow 0.2s, background-color 0.2s,
     color 0.2s;
 }
@@ -823,7 +824,43 @@ body {
 }
 
 .pull-stage {
+  position: relative;
   padding: 1.5rem;
+}
+
+/* rarity light tell: glow behind the stage hints at hidden cards */
+.pull-stage::before {
+  content: "";
+  position: absolute;
+  inset: -2rem;
+  pointer-events: none;
+  z-index: 0;
+  background: transparent;
+  transition: background 0.6s ease;
+}
+
+.pull-stage[data-glow="rare"]::before {
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    rgba(255, 207, 63, 0.2),
+    transparent 65%
+  );
+}
+
+.pull-stage[data-glow="epic"]::before {
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    rgba(157, 100, 255, 0.28),
+    rgba(255, 61, 240, 0.12) 45%,
+    transparent 72%
+  );
+}
+
+.pull-header,
+.pull-grid,
+.pull-actions {
+  position: relative;
+  z-index: 1;
 }
 
 .pull-header {
@@ -879,7 +916,24 @@ body {
 
 .pull-grid .gcard[data-rarity="SSR"],
 .pull-grid .gcard[data-rarity="UR"] {
-  animation: rare-burst 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  animation:
+    descend 0.9s cubic-bezier(0.16, 0.8, 0.3, 1),
+    rare-burst 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+@keyframes descend {
+  0% {
+    transform: translateY(-38px) scale(1.05);
+    opacity: 0;
+    filter: brightness(2.2) saturate(1.4);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    filter: brightness(1) saturate(1);
+  }
 }
 
 @keyframes rare-burst {
@@ -1360,12 +1414,15 @@ body {
 
 .typing-line {
   display: inline-block;
+  min-height: 1em;
+  min-width: 5ch;
 }
 
 .typing-text {
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
+  min-width: 5ch;
   border-right: 2px solid var(--cyan);
   line-height: 1;
   padding-bottom: 0.12em;
@@ -1869,4 +1926,151 @@ body {
 .high-contrast .comms-locked-text {
   color: #fff;
   border-color: #fff;
+}
+
+/* ---------- rounded corners pass ---------- */
+
+.filter-chip,
+.credits-chip,
+.streak-chip,
+.stipend-btn,
+.sign-in-btn,
+.copy-btn,
+.mute-btn,
+.modal-close,
+.pull-badge,
+.tag-chip,
+.gcard-rarity,
+.filter-chip-on {
+  border-radius: 999px;
+}
+
+.gcard {
+  border-radius: 10px;
+}
+
+.panel,
+.status-banner,
+.trophy,
+.toast,
+.mine-panel {
+  border-radius: 14px;
+}
+
+.mine-btn {
+  border-radius: 16px;
+}
+
+.transmit-input {
+  border-radius: 10px;
+}
+
+.modal,
+.pull-dialog {
+  border-radius: 18px;
+  overflow: hidden auto;
+}
+
+.transmit-form .btn,
+.summon-actions .btn {
+  border-radius: 999px;
+}
+
+/* ---------- gold mode (unlockable at 15 records) ---------- */
+
+html.gold-mode {
+  --cyan: #ffd76a;
+  --magenta: #ffb347;
+  --green: #ffe08a;
+}
+
+html.gold-mode body {
+  background-image:
+    linear-gradient(rgba(255, 215, 106, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 215, 106, 0.05) 1px, transparent 1px);
+}
+
+.gold-btn {
+  cursor: pointer;
+  font-size: 0.8rem;
+  line-height: 1;
+  color: var(--dim);
+  background-color: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.3rem 0.55rem;
+  transition: color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.gold-btn:hover:not(:disabled) {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+.gold-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.gold-btn-on {
+  color: #001318;
+  background-color: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 0 16px rgba(255, 207, 63, 0.5);
+}
+
+/* ---------- operator exam ---------- */
+
+.exam-panel {
+  margin-top: 1rem;
+}
+
+.exam-question {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.exam-counter {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  color: var(--dim);
+}
+
+.exam-prompt {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #fff;
+}
+
+.exam-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.6rem;
+}
+
+.exam-option {
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.85rem;
+  color: var(--text);
+  background-color: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.75rem 0.9rem;
+  transition: border-color 0.2s, transform 0.15s, color 0.2s;
+}
+
+.exam-option:hover:not(:disabled) {
+  border-color: var(--cyan);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.exam-failed {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--magenta);
+  margin: 0.75rem 0;
 }

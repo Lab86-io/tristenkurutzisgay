@@ -37,8 +37,8 @@ function SummonPage() {
 					<TypingGreeting />
 				</h1>
 				<p className="summon-sub section-sub">
-					&gt;_ OPERATOR FILES DETECTED. SPEND CREDITS TO DECRYPT THE CAREER OF
-					A SOFTWARE ENGINEER.
+					A résumé you have to pull for. Sign in, earn credits, and decrypt
+					Tristen's career one card at a time.
 				</p>
 
 				{status === "signed-out" ? (
@@ -46,7 +46,7 @@ function SummonPage() {
 						<span className="first-pull-spark" aria-hidden="true">
 							✦
 						</span>
-						SIGN IN TO PLAY — PROGRESS SAVES TO YOUR ACCOUNT
+						Sign in to play — progress saves to your account.
 					</div>
 				) : state.characterAcquired ? (
 					<Link
@@ -64,7 +64,7 @@ function SummonPage() {
 						<span className="first-pull-spark" aria-hidden="true">
 							✦
 						</span>
-						FIRST SUMMON FREE — GUARANTEED UR OPERATOR
+						First summon is free — and it's always the UR operator card.
 					</div>
 				)}
 

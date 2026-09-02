@@ -15,6 +15,8 @@ const NAV_ITEMS = [
 ] as const;
 
 const CONTRAST_KEY = "high-contrast";
+const GOLD_KEY = "gold-mode";
+const GOLD_UNLOCK_AT = 15;
 
 export function Hud() {
 	const { status, state } = useGachaSession();
@@ -23,6 +25,28 @@ export function Hud() {
 	const [contrast, setContrast] = useState(false);
 	const [muted, setMuted] = useState(false);
 	const [creditsInfoOpen, setCreditsInfoOpen] = useState(false);
+	const [goldMode, setGoldMode] = useState(false);
+
+	const goldUnlocked =
+		status === "ready" && Object.keys(state.owned).length >= GOLD_UNLOCK_AT;
+
+	useEffect(() => {
+		try {
+			setGoldMode(localStorage.getItem(GOLD_KEY) === "true");
+		} catch {
+			// ignore
+		}
+	}, []);
+
+	useEffect(() => {
+		const active = goldMode && goldUnlocked;
+		document.documentElement.classList.toggle("gold-mode", active);
+		try {
+			localStorage.setItem(GOLD_KEY, String(active));
+		} catch {
+			// ignore
+		}
+	}, [goldMode, goldUnlocked]);
 
 	useEffect(() => {
 		setStipendReady(
@@ -108,6 +132,20 @@ export function Hud() {
 						aria-label={muted ? "Unmute sound effects" : "Mute sound effects"}
 					>
 						{muted ? "🔇" : "🔊"}
+					</button>
+					<button
+						type="button"
+						className={`gold-btn ${goldMode && goldUnlocked ? "gold-btn-on" : ""}`}
+						disabled={!goldUnlocked}
+						title={
+							goldUnlocked
+								? "Toggle gold mode"
+								: `Unlocks at ${GOLD_UNLOCK_AT} decrypted records`
+						}
+						onClick={() => setGoldMode((value) => !value)}
+						aria-pressed={goldMode && goldUnlocked}
+					>
+						✦
 					</button>
 					<ContrastToggle checked={contrast} onCheckedChange={setContrast} />
 					{status === "signed-out" ? (

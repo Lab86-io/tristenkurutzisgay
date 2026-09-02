@@ -67,6 +67,14 @@ export function PullReveal({
 	const done = revealed >= results.length;
 	const credits = state.credits;
 
+	// Genshin-style light tell: the glow color hints at the best card still hidden
+	const unrevealed = results.slice(revealed);
+	const glow = unrevealed.some((result) => result.card.rarity === "UR")
+		? "epic"
+		: unrevealed.some((result) => result.card.rarity === "SSR")
+			? "rare"
+			: "none";
+
 	const skip = () => setRevealed(results.length);
 
 	return (
@@ -82,7 +90,7 @@ export function PullReveal({
 				onClose();
 			}}
 		>
-			<div className="pull-stage" data-flash={revealed > 0 && !done}>
+			<div className="pull-stage" data-glow={glow}>
 				<div className="pull-header">
 					<h2 className="pull-title">
 						{done

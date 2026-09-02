@@ -141,9 +141,7 @@ function NotFound() {
 	return (
 		<div className="notfound-page">
 			<h1 className="page-title font-myfont">SIGNAL LOST</h1>
-			<p className="section-sub">
-				&gt;_ ERR 404: RECORD NOT FOUND IN DATABASE.
-			</p>
+			<p className="section-sub">That record doesn't exist.</p>
 			<Link to="/" className="btn btn-neon">
 				RETURN TO SUMMON ▸
 			</Link>

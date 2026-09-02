@@ -42,12 +42,11 @@ function CollectionPage() {
 			<h1 className="page-title font-myfont">INVENTORY</h1>
 			{status === "ready" ? (
 				<p className="section-sub">
-					&gt;_ {Object.keys(state.owned).length}/{ALL_CARDS.length} RECORDS
-					DECRYPTED. PULL TO UNLOCK THE REST.
+					{Object.keys(state.owned).length} of {ALL_CARDS.length} records
+					decrypted — keep pulling.
 				</p>
 			) : (
 				<p className="section-sub">
-					&gt;_{" "}
 					{status === "signed-out" ? (
 						<SignInButton mode="modal">
 							<button type="button" className="linklike neon-link">
@@ -55,9 +54,9 @@ function CollectionPage() {
 							</button>
 						</SignInButton>
 					) : (
-						<span>CONNECTING…</span>
+						<span>connecting…</span>
 					)}{" "}
-					TO DECRYPT RECORDS. YOUR INVENTORY SAVES TO YOUR ACCOUNT.
+					to build your inventory — it saves to your account.
 				</p>
 			)}
 

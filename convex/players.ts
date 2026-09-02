@@ -331,8 +331,7 @@ export const mine = mutation({
 	},
 });
 
-export const sendMessage = mutation({
-	args: {
+export const sendMessage = mutation({	args: {
 		name: v.string(),
 		email: v.string(),
 		message: v.string(),
@@ -366,5 +365,42 @@ export const sendMessage = mutation({
 		}
 		await ctx.db.replace(player._id, updated);
 		return { rewardGranted: rewardDue, reward: rewardDue ? CONTACT_REWARD : 0, state: publicState(updated) };
+	},
+});
+
+// answer key for the OPERATOR EXAM quiz on the dossier page
+const EXAM_ANSWERS = [2, 0, 3];
+
+export const submitExam = mutation({
+	args: { answers: v.array(v.number()) },
+	handler: async (ctx, args) => {
+		const player = await ensurePlayer(ctx);
+		const passed =
+			args.answers.length === EXAM_ANSWERS.length &&
+			EXAM_ANSWERS.every((answer, index) => args.answers[index] === answer);
+		if (!passed) {
+			return { passed: false as const, unlocked: [], state: publicState(player) };
+		}
+
+		const draft: PlayerDoc = {
+			...player,
+			contactRewarded: player.contactRewarded ?? false,
+		};
+		const unlocked = evaluateAchievements(draft, { examPassed: true });
+		let rewardTotal = 0;
+		const achievements = { ...player.achievements };
+		for (const achievement of unlocked) {
+			achievements[achievement.id] = Date.now();
+			rewardTotal += achievement.reward;
+		}
+
+		const updated: PlayerDoc = {
+			...draft,
+			credits: draft.credits + rewardTotal,
+			achievements,
+			updatedAt: Date.now(),
+		};
+		await ctx.db.replace(player._id, updated);
+		return { passed: true as const, unlocked, state: publicState(updated) };
 	},
 });

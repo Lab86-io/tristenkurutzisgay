@@ -90,7 +90,7 @@ function CommsPage() {
 		<div className="comms-page">
 			<h1 className="page-title font-myfont">COMMS</h1>
 			<p className="section-sub">
-				&gt;_ UPLINK CHANNELS ARE EARNED. DECRYPT RECORDS TO OPEN THEM.
+				Contact channels are earned here — decrypt records to open them.
 			</p>
 
 			<div className="status-banner">
