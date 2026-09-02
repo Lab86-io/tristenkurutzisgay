@@ -15,7 +15,9 @@ export const Route = createFileRoute("/admin")({
 	component: AdminPage,
 });
 
-const OWNER_EMAILS = (import.meta.env.VITE_OWNER_EMAILS ?? "tristenkurutz@gmail.com")
+const OWNER_EMAILS = (
+	import.meta.env.VITE_OWNER_EMAILS ?? "tristenkurutz@gmail.com"
+)
 	.split(",")
 	.map((email: string) => email.trim().toLowerCase());
 
