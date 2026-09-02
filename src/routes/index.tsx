@@ -1,6 +1,7 @@
 import { SignInButton } from "@clerk/tanstack-react-start";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { Clicker } from "#/components/gacha/Clicker";
 import { GachaCardFace } from "#/components/gacha/GachaCard";
 import { PullReveal } from "#/components/gacha/PullReveal";
 import { RatesModal } from "#/components/gacha/RatesModal";
@@ -84,10 +85,10 @@ function SummonPage() {
 							<button
 								type="button"
 								className="btn btn-neon btn-lg"
-								disabled={state.credits < PULL_COST}
+								disabled={state.characterAcquired && state.credits < PULL_COST}
 								onClick={() => doSummon(1)}
 							>
-								SUMMON ×1 — {PULL_COST}◈
+								SUMMON ×1 — {state.characterAcquired ? `${PULL_COST}◈` : "FREE"}
 							</button>
 							<button
 								type="button"
@@ -124,6 +125,8 @@ function SummonPage() {
 						<dd>{status === "ready" ? `${state.credits}◈` : "—"}</dd>
 					</div>
 				</dl>
+
+				{status === "ready" && <Clicker minedToday={state.minedToday} />}
 
 				<p className="summon-foot">
 					<Link to="/collection" className="neon-link">

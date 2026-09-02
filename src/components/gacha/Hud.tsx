@@ -129,13 +129,21 @@ export function Hud() {
 			>
 				<h3 className="modal-title">CREDITS ◈</h3>
 				<p className="modal-sub">
-					Credits are tied to your account — they follow you across devices and
-					survive refreshes. Ways to earn:
+					Credits live on your account — they follow you across devices. They
+					are earned, not given:
 				</p>
 				<ul className="credits-info-list">
 					<li>
+						<span>FIRST TRANSMISSION</span>
+						<span className="lit">+900◈ once — send a message via COMMS</span>
+					</li>
+					<li>
+						<span>CREDIT MINER</span>
+						<span className="lit">+1◈/click, 150◈ daily cap</span>
+					</li>
+					<li>
 						<span>DAILY UPLINK</span>
-						<span className="lit">+{STIPEND_AMOUNT}◈ / day</span>
+						<span className="lit">+100◈ / day</span>
 					</li>
 					<li>
 						<span>DUPLICATE CARDS</span>
@@ -143,16 +151,13 @@ export function Hud() {
 					</li>
 					<li>
 						<span>TROPHIES</span>
-						<span className="lit">+100◈ → +1000◈ (see DOSSIER)</span>
-					</li>
-					<li>
-						<span>NEW OPERATOR GRANT</span>
-						<span className="lit">1000◈ + free UR summon</span>
+						<span className="lit">+25◈ → +300◈ (see DOSSIER)</span>
 					</li>
 				</ul>
 				<p className="modal-foot">
-					Pity: SR+ guaranteed every 10 pulls · UR guaranteed at 90. Rates are
-					published on the SUMMON page. No refunds on pulls.
+					New operators start at 0◈ but the first summon is free and always
+					decrypts the operator card. Pity: SR+ every 10 pulls · UR at 90. No
+					refunds on pulls.
 				</p>
 			</Modal>
 		</header>

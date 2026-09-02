@@ -1,5 +1,7 @@
 import { ALL_CARDS, PULLABLE_BY_RARITY, RARITY_META, RARITY_ORDER, type Rarity } from "../src/data/cards";
 import {
+	CONTACT_REWARD,
+	MINE_DAILY_CAP,
 	PITY_SR,
 	PITY_UR,
 	PULL_COST,
@@ -25,6 +27,8 @@ interface PlayerState {
 	lastStipendDate: string | null;
 	streak: number;
 	achievements: Record<string, number>;
+	minedToday: number;
+	contactRewarded: boolean;
 }
 
 function publicState(player: PlayerDoc): PlayerState {
@@ -38,6 +42,8 @@ function publicState(player: PlayerDoc): PlayerState {
 		lastStipendDate: player.lastStipendDate ?? null,
 		streak: player.streak,
 		achievements: player.achievements,
+		minedToday: player.minedDate === new Date().toISOString().slice(0, 10) ? (player.minedToday ?? 0) : 0,
+		contactRewarded: player.contactRewarded ?? false,
 	};
 }
 
@@ -133,7 +139,8 @@ export const summon = mutation({
 	args: { count: v.union(v.literal(1), v.literal(10)) },
 	handler: async (ctx, args) => {
 		const player = await ensurePlayer(ctx);
-		const freeFirst = !player.characterAcquired;
+		// the very first ×1 summon is free: guaranteed UR operator card
+		const freeFirst = !player.characterAcquired && args.count === 1;
 		const cost = freeFirst ? 0 : args.count === 1 ? PULL_COST : TEN_PULL_COST;
 		if (player.credits < cost) {
 			throw new Error("INSUFFICIENT_CREDITS");
@@ -286,8 +293,78 @@ export const resetSave = mutation({
 			lastStipendDate: null,
 			streak: 0,
 			achievements: {},
+			minedToday: 0,
+			minedDate: undefined,
+			contactRewarded: false,
 			createdAt: player.createdAt,
 			updatedAt: now,
 		});
+	},
+});
+
+export const mine = mutation({
+	args: { amount: v.number() },
+	handler: async (ctx, args) => {
+		const player = await ensurePlayer(ctx);
+		if (
+			!Number.isInteger(args.amount) ||
+			args.amount < 1 ||
+			args.amount > 200
+		) {
+			throw new Error("INVALID_MINING_BATCH");
+		}
+
+		const today = new Date().toISOString().slice(0, 10);
+		const minedToday =
+			player.minedDate === today ? (player.minedToday ?? 0) : 0;
+		const granted = Math.max(0, Math.min(args.amount, MINE_DAILY_CAP - minedToday));
+
+		const updated: PlayerDoc = {
+			...player,
+			credits: player.credits + granted,
+			minedToday: minedToday + granted,
+			minedDate: today,
+			updatedAt: Date.now(),
+		};
+		await ctx.db.replace(player._id, updated);
+		return { granted, minedToday: updated.minedToday ?? 0, state: publicState(updated) };
+	},
+});
+
+export const sendMessage = mutation({
+	args: {
+		name: v.string(),
+		email: v.string(),
+		message: v.string(),
+	},
+	handler: async (ctx, args) => {
+		const player = await ensurePlayer(ctx);
+		const name = args.name.trim().slice(0, 80);
+		const email = args.email.trim().slice(0, 120);
+		const message = args.message.trim().slice(0, 2000);
+		if (!name || !email.includes("@") || message.length < 10) {
+			throw new Error("INVALID_MESSAGE");
+		}
+
+		const rewardDue = !player.contactRewarded;
+		await ctx.db.insert("messages", {
+			userId: player.userId,
+			name,
+			email,
+			message,
+			rewardGranted: rewardDue,
+			createdAt: Date.now(),
+		});
+
+		let updated: PlayerDoc = {
+			...player,
+			contactRewarded: true,
+			updatedAt: Date.now(),
+		};
+		if (rewardDue) {
+			updated = { ...updated, credits: updated.credits + CONTACT_REWARD };
+		}
+		await ctx.db.replace(player._id, updated);
+		return { rewardGranted: rewardDue, reward: rewardDue ? CONTACT_REWARD : 0, state: publicState(updated) };
 	},
 });

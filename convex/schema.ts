@@ -20,7 +20,18 @@ export default defineSchema({
 		lastStipendDate: v.union(v.string(), v.null()),
 		streak: v.number(),
 		achievements: v.record(v.string(), v.number()),
+		minedToday: v.optional(v.number()),
+		minedDate: v.optional(v.string()),
+		contactRewarded: v.optional(v.boolean()),
 		createdAt: v.number(),
 		updatedAt: v.number(),
+	}).index("by_userId", ["userId"]),
+	messages: defineTable({
+		userId: v.string(),
+		name: v.string(),
+		email: v.string(),
+		message: v.string(),
+		rewardGranted: v.boolean(),
+		createdAt: v.number(),
 	}).index("by_userId", ["userId"]),
 });

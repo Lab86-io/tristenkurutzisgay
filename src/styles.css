@@ -1388,6 +1388,182 @@ body {
   text-align: center;
 }
 
+/* ---------- credit miner ---------- */
+
+.mine-panel {
+  max-width: 34rem;
+  margin: 0 auto 2rem;
+  border: 1px solid var(--line);
+  background-color: var(--panel);
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+}
+
+.mine-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.mine-head .panel-title {
+  margin-bottom: 0;
+}
+
+.mine-cap {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+}
+
+.mine-sub {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--dim);
+  line-height: 1.6;
+  margin: 0.75rem 0 1rem;
+}
+
+.mine-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1.1rem;
+  cursor: pointer;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 1rem;
+  letter-spacing: 0.24em;
+  color: var(--gold);
+  background: linear-gradient(160deg, var(--panel-2), var(--panel));
+  border: 1px solid rgba(255, 207, 63, 0.5);
+  transition: transform 0.06s, box-shadow 0.2s, border-color 0.2s;
+  user-select: none;
+}
+
+.mine-btn:hover:not(:disabled) {
+  border-color: var(--gold);
+  box-shadow: 0 0 22px rgba(255, 207, 63, 0.35);
+}
+
+.mine-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.mine-btn:disabled {
+  cursor: not-allowed;
+  color: var(--dim);
+  border-style: dashed;
+}
+
+.mine-btn-icon {
+  font-size: 1.3rem;
+}
+
+.mine-pending {
+  position: absolute;
+  right: 0.75rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+}
+
+.mine-float {
+  position: absolute;
+  top: 20%;
+  pointer-events: none;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--cyan);
+  text-shadow: 0 0 10px rgba(41, 230, 255, 0.7);
+  animation: mine-float-up 0.9s ease-out forwards;
+}
+
+.mine-float-crit {
+  color: var(--magenta);
+  text-shadow: 0 0 12px rgba(255, 61, 240, 0.8);
+  font-weight: 700;
+}
+
+@keyframes mine-float-up {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-42px);
+    opacity: 0;
+  }
+}
+
+.mine-bank {
+  margin-top: 0.75rem;
+  width: 100%;
+}
+
+/* ---------- transmission form ---------- */
+
+.transmit-panel {
+  margin-bottom: 2rem;
+}
+
+.transmit-sub {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--dim);
+  line-height: 1.6;
+  margin: 0 0 1.25rem;
+}
+
+.transmit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  max-width: 34rem;
+}
+
+.transmit-row {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  align-items: start;
+  gap: 1rem;
+}
+
+.transmit-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: var(--dim);
+  padding-top: 0.6rem;
+}
+
+.transmit-input {
+  width: 100%;
+  background-color: var(--panel-2);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  padding: 0.6rem 0.75rem;
+}
+
+.transmit-input:focus {
+  outline: none;
+  border-color: var(--cyan);
+}
+
+.transmit-textarea {
+  resize: vertical;
+  min-height: 6rem;
+}
+
+.transmit-form .btn {
+  align-self: flex-start;
+}
+
 /* ---------- toasts ---------- */
 
 .toast-stack {

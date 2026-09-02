@@ -2,7 +2,8 @@ import { SignInButton } from "@clerk/tanstack-react-start";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ALL_CARDS } from "#/data/cards";
-import { useGachaSession } from "#/hooks/useGacha";
+import { useGachaSession, useSendMessage } from "#/hooks/useGacha";
+import { CONTACT_REWARD } from "#/lib/gacha";
 
 export const Route = createFileRoute("/comms")({
 	head: () => ({
@@ -52,7 +53,10 @@ const CHANNELS: Channel[] = [
 
 function CommsPage() {
 	const { status, state } = useGachaSession();
+	const sendMessage = useSendMessage();
 	const [copied, setCopied] = useState(false);
+	const [form, setForm] = useState({ name: "", email: "", message: "" });
+	const [sending, setSending] = useState(false);
 	const timerRef = useRef<number | undefined>(undefined);
 
 	useEffect(() => () => clearTimeout(timerRef.current), []);
@@ -66,6 +70,15 @@ function CommsPage() {
 		} catch {
 			// clipboard blocked
 		}
+	};
+
+	const submitMessage = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (sending) return;
+		setSending(true);
+		const ok = await sendMessage(form.name, form.email, form.message);
+		setSending(false);
+		if (ok) setForm({ name: "", email: "", message: "" });
 	};
 
 	const uniqueOwned = Object.keys(state.owned).length;
@@ -84,6 +97,107 @@ function CommsPage() {
 				<span className="status-dot" aria-hidden="true" />
 				STATUS: OPEN TO FULL-TIME ROLES — GRADUATING DEC 2026
 			</div>
+
+			{status === "ready" ? (
+				<section className="panel transmit-panel">
+					<h2 className="panel-title">
+						{state.contactRewarded
+							? "SEND A TRANSMISSION"
+							: `FIRST TRANSMISSION — +${CONTACT_REWARD}◈`}
+					</h2>
+					<p className="transmit-sub">
+						{state.contactRewarded
+							? "The reward is claimed, but messages still get through."
+							: `One-time bonus: send Tristen a message (10+ characters) and the ledger pays out +${CONTACT_REWARD}◈ — enough for a 10-pull.`}
+					</p>
+					<form className="transmit-form" onSubmit={submitMessage}>
+						<div className="transmit-row">
+							<label className="transmit-label" htmlFor="tx-name">
+								NAME
+							</label>
+							<input
+								id="tx-name"
+								className="transmit-input"
+								value={form.name}
+								maxLength={80}
+								required
+								onChange={(event) =>
+									setForm({ ...form, name: event.target.value })
+								}
+							/>
+						</div>
+						<div className="transmit-row">
+							<label className="transmit-label" htmlFor="tx-email">
+								EMAIL
+							</label>
+							<input
+								id="tx-email"
+								className="transmit-input"
+								type="email"
+								value={form.email}
+								maxLength={120}
+								required
+								onChange={(event) =>
+									setForm({ ...form, email: event.target.value })
+								}
+							/>
+						</div>
+						<div className="transmit-row">
+							<label className="transmit-label" htmlFor="tx-message">
+								MESSAGE
+							</label>
+							<textarea
+								id="tx-message"
+								className="transmit-input transmit-textarea"
+								value={form.message}
+								maxLength={2000}
+								minLength={10}
+								required
+								rows={4}
+								placeholder="Introduce yourself, ask about roles, trade Rimworld tips…"
+								onChange={(event) =>
+									setForm({ ...form, message: event.target.value })
+								}
+							/>
+						</div>
+						<button
+							type="submit"
+							className="btn btn-neon"
+							disabled={
+								sending ||
+								!form.name.trim() ||
+								!form.email.includes("@") ||
+								form.message.trim().length < 10
+							}
+						>
+							{sending
+								? "TRANSMITTING…"
+								: `TRANSMIT${state.contactRewarded ? "" : ` — +${CONTACT_REWARD}◈`}`}
+						</button>
+					</form>
+				</section>
+			) : (
+				<section className="panel transmit-panel">
+					<h2 className="panel-title">
+						FIRST TRANSMISSION — +{CONTACT_REWARD}◈
+					</h2>
+					<p className="transmit-sub">
+						{status === "signed-out" ? (
+							<>
+								<SignInButton mode="modal">
+									<button type="button" className="linklike neon-link">
+										SIGN IN
+									</button>
+								</SignInButton>{" "}
+								to send the first transmission and claim the opening bonus — it
+								is worth a full 10-pull.
+							</>
+						) : (
+							"CONNECTING…"
+						)}
+					</p>
+				</section>
+			)}
 
 			<div className="comms-list">
 				{status !== "ready" && (

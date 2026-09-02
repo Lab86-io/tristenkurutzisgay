@@ -1,9 +1,14 @@
-export const START_CREDITS = 1000;
+export const START_CREDITS = 0;
 export const PULL_COST = 100;
 export const TEN_PULL_COST = 900;
-export const STIPEND_AMOUNT = 600;
+export const STIPEND_AMOUNT = 100;
 export const PITY_SR = 10;
 export const PITY_UR = 90;
+export const CONTACT_REWARD = 900;
+export const MINE_PER_CLICK = 1;
+export const MINE_CRIT_CHANCE = 0.1;
+export const MINE_CRIT_BONUS = 4;
+export const MINE_DAILY_CAP = 150;
 
 export interface OwnedEntry {
 	count: number;
@@ -20,6 +25,8 @@ export interface GachaState {
 	lastStipendDate: string | null;
 	streak: number;
 	achievements: Record<string, number>;
+	minedToday: number;
+	contactRewarded: boolean;
 }
 
 export interface PullResult {
@@ -47,6 +54,8 @@ export function defaultGachaState(): GachaState {
 		lastStipendDate: null,
 		streak: 0,
 		achievements: {},
+		minedToday: 0,
+		contactRewarded: false,
 	};
 }
 

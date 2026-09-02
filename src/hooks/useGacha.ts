@@ -120,3 +120,46 @@ export function useResetSave(): () => Promise<void> {
 		}
 	};
 }
+
+export function useMine(): (amount: number) => Promise<number> {
+	const mineMutation = useMutation(api.players.mine);
+	return async (amount) => {
+		try {
+			const response = await mineMutation({ amount });
+			return response.granted;
+		} catch {
+			return 0;
+		}
+	};
+}
+
+export function useSendMessage(): (
+	name: string,
+	email: string,
+	message: string,
+) => Promise<boolean> {
+	const sendMutation = useMutation(api.players.sendMessage);
+	return async (name, email, message) => {
+		try {
+			const response = await sendMutation({ name, email, message });
+			if (response.rewardGranted) {
+				pushToast(
+					"FIRST TRANSMISSION",
+					`Message delivered — +${response.reward}◈`,
+					"gold",
+				);
+				sfx.unlock();
+			} else {
+				pushToast("TRANSMISSION SENT", "Message delivered.", "green");
+			}
+			return true;
+		} catch {
+			pushToast(
+				"TRANSMISSION FAILED",
+				"Check the fields — message needs 10+ characters.",
+				"magenta",
+			);
+			return false;
+		}
+	};
+}
