@@ -1,12 +1,15 @@
+import { SignInButton, UserButton } from "@clerk/tanstack-react-start";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ContrastToggle } from "#/components/ContrastToggle";
-import { claimStipend, useGacha } from "#/hooks/useGacha";
+import { Modal } from "#/components/gacha/Modal";
+import { useClaimStipend, useGachaSession } from "#/hooks/useGacha";
+import { STIPEND_AMOUNT } from "#/lib/gacha";
 import { sfx } from "#/lib/sfx";
 
 const NAV_ITEMS = [
 	{ label: "SUMMON", to: "/" },
-	{ label: "DATABASE", to: "/collection" },
+	{ label: "INVENTORY", to: "/collection" },
 	{ label: "DOSSIER", to: "/about" },
 	{ label: "COMMS", to: "/comms" },
 ] as const;
@@ -14,16 +17,23 @@ const NAV_ITEMS = [
 const CONTRAST_KEY = "high-contrast";
 
 export function Hud() {
-	const state = useGacha();
+	const { status, state } = useGachaSession();
+	const claimStipend = useClaimStipend();
 	const [stipendReady, setStipendReady] = useState(false);
 	const [contrast, setContrast] = useState(false);
 	const [muted, setMuted] = useState(false);
+	const [creditsInfoOpen, setCreditsInfoOpen] = useState(false);
 
 	useEffect(() => {
 		setStipendReady(
-			state.stipendDate !== new Date().toISOString().slice(0, 10),
+			status === "ready" &&
+				state.lastStipendDate !== new Date().toISOString().slice(0, 10),
 		);
-	}, [state.stipendDate]);
+	}, [status, state.lastStipendDate]);
+
+	useEffect(() => {
+		setMuted(sfx.isMuted());
+	}, []);
 
 	useEffect(() => {
 		try {
@@ -36,10 +46,6 @@ export function Hud() {
 		} catch {
 			// storage can be blocked; the toggle still works for the session
 		}
-	}, []);
-
-	useEffect(() => {
-		setMuted(sfx.isMuted());
 	}, []);
 
 	useEffect(() => {
@@ -71,23 +77,29 @@ export function Hud() {
 					))}
 				</nav>
 				<div className="hud-right">
-					{state.streak > 0 && (
+					{status === "ready" && state.streak > 0 && (
 						<span className="streak-chip" title="Daily uplink streak">
 							STREAK ×{state.streak}
 						</span>
 					)}
-					{stipendReady && (
+					{status === "ready" && stipendReady && (
 						<button
 							type="button"
 							className="stipend-btn"
 							onClick={() => claimStipend()}
 						>
-							UPLINK +600◈
+							UPLINK +{STIPEND_AMOUNT}◈
 						</button>
 					)}
-					<span className="credits-chip">
-						<span aria-hidden="true">◈</span> {state.credits}
-					</span>
+					<button
+						type="button"
+						className="credits-chip"
+						onClick={() => setCreditsInfoOpen(true)}
+						aria-label="Credit balance — how to earn credits"
+					>
+						<span aria-hidden="true">◈</span>{" "}
+						{status === "ready" ? state.credits : "…"}
+					</button>
 					<button
 						type="button"
 						className="mute-btn"
@@ -98,8 +110,51 @@ export function Hud() {
 						{muted ? "🔇" : "🔊"}
 					</button>
 					<ContrastToggle checked={contrast} onCheckedChange={setContrast} />
+					{status === "signed-out" ? (
+						<SignInButton mode="modal">
+							<button type="button" className="sign-in-btn">
+								SIGN IN
+							</button>
+						</SignInButton>
+					) : (
+						<UserButton />
+					)}
 				</div>
 			</div>
+
+			<Modal
+				open={creditsInfoOpen}
+				onClose={() => setCreditsInfoOpen(false)}
+				label="How to earn credits"
+			>
+				<h3 className="modal-title">CREDITS ◈</h3>
+				<p className="modal-sub">
+					Credits are tied to your account — they follow you across devices and
+					survive refreshes. Ways to earn:
+				</p>
+				<ul className="credits-info-list">
+					<li>
+						<span>DAILY UPLINK</span>
+						<span className="lit">+{STIPEND_AMOUNT}◈ / day</span>
+					</li>
+					<li>
+						<span>DUPLICATE CARDS</span>
+						<span className="lit">+20◈ → +500◈ by rarity</span>
+					</li>
+					<li>
+						<span>TROPHIES</span>
+						<span className="lit">+100◈ → +1000◈ (see DOSSIER)</span>
+					</li>
+					<li>
+						<span>NEW OPERATOR GRANT</span>
+						<span className="lit">1000◈ + free UR summon</span>
+					</li>
+				</ul>
+				<p className="modal-foot">
+					Pity: SR+ guaranteed every 10 pulls · UR guaranteed at 90. Rates are
+					published on the SUMMON page. No refunds on pulls.
+				</p>
+			</Modal>
 		</header>
 	);
 }

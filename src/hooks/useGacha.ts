@@ -1,29 +1,122 @@
-import { useEffect, useSyncExternalStore } from "react";
-import { type GachaState, gachaStore, type PullResult } from "#/lib/gacha";
+import { useAuth } from "@clerk/tanstack-react-start";
+import { useMutation, useQuery } from "convex/react";
+import { CARD_BY_ID, type GachaCard } from "#/data/cards";
+import {
+	defaultGachaState,
+	type GachaState,
+	type UnlockedAchievement,
+} from "#/lib/gacha";
+import { sfx } from "#/lib/sfx";
+import { pushToast } from "#/lib/toasts";
+import { api } from "../../convex/_generated/api";
 
-export function useGacha(): GachaState {
-	useEffect(() => {
-		gachaStore.hydrate();
-	}, []);
-	return useSyncExternalStore(
-		gachaStore.subscribe,
-		gachaStore.getSnapshot,
-		gachaStore.getServerSnapshot,
+export type SessionStatus = "loading" | "signed-out" | "ready";
+
+export interface RevealCard {
+	seq: number;
+	card: GachaCard;
+	isDupe: boolean;
+	refund: number;
+}
+
+export interface SummonOutcome {
+	results: RevealCard[];
+	unlocked: UnlockedAchievement[];
+}
+
+export function useGachaSession(): {
+	status: SessionStatus;
+	state: GachaState;
+} {
+	const { isLoaded, isSignedIn } = useAuth();
+	const raw = useQuery(
+		api.players.getState,
+		isLoaded && isSignedIn ? {} : "skip",
 	);
+
+	if (!isLoaded || (isSignedIn && raw === undefined)) {
+		return { status: "loading", state: defaultGachaState() };
+	}
+	if (!isSignedIn) {
+		return { status: "signed-out", state: defaultGachaState() };
+	}
+	return { status: "ready", state: raw ?? defaultGachaState() };
 }
 
-export function summon(count: 1 | 10): PullResult[] | null {
-	return gachaStore.summon(count);
+function announceUnlocks(unlocked: UnlockedAchievement[]): void {
+	for (const achievement of unlocked) {
+		pushToast(
+			`TROPHY — ${achievement.name}`,
+			`${achievement.description} +${achievement.reward}◈`,
+			"gold",
+		);
+	}
+	if (unlocked.length) sfx.unlock();
 }
 
-export function claimStipend(): boolean {
-	return gachaStore.claimStipend();
+export function useSummon(): (count: 1 | 10) => Promise<SummonOutcome | null> {
+	const summonMutation = useMutation(api.players.summon);
+	return async (count) => {
+		try {
+			const response = await summonMutation({ count });
+			announceUnlocks(response.unlocked);
+			return {
+				results: response.results.flatMap((result) => {
+					const card = CARD_BY_ID.get(result.cardId);
+					if (!card) return [];
+					return [
+						{
+							seq: result.seq,
+							card,
+							isDupe: result.isDupe,
+							refund: result.refund,
+						},
+					];
+				}),
+				unlocked: response.unlocked,
+			};
+		} catch (error) {
+			const message = error instanceof Error ? error.message : "";
+			if (message.includes("INSUFFICIENT_CREDITS")) {
+				pushToast("INSUFFICIENT CREDITS", "Claim the daily UPLINK.", "magenta");
+			} else if (message.includes("SIGN_IN_REQUIRED")) {
+				pushToast("SIGN IN REQUIRED", "Sign in to summon.", "magenta");
+			} else {
+				pushToast("SUMMON FAILED", "Try again.", "magenta");
+			}
+			return null;
+		}
+	};
 }
 
-export function stipendAvailable(): boolean {
-	return gachaStore.stipendAvailable();
+export function useClaimStipend(): () => Promise<void> {
+	const claimMutation = useMutation(api.players.claimStipend);
+	return async () => {
+		try {
+			const response = await claimMutation({});
+			if (response.claimed) {
+				sfx.uplink();
+				pushToast(
+					"UPLINK CLAIMED",
+					`+600◈ — STREAK ×${response.state.streak}`,
+					"green",
+				);
+				announceUnlocks(response.unlocked);
+			}
+		} catch {
+			pushToast("UPLINK FAILED", "Sign in first.", "magenta");
+		}
+	};
 }
 
-export function resetSave(): void {
-	gachaStore.reset();
+export function useResetSave(): () => Promise<void> {
+	const resetMutation = useMutation(api.players.resetSave);
+	return async () => {
+		try {
+			await resetMutation({});
+			pushToast("SAVE WIPED", "Fresh operator record created.", "cyan");
+		} catch {
+			pushToast("RESET FAILED", "Sign in first.", "magenta");
+		}
+	};
 }

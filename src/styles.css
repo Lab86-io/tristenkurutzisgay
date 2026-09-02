@@ -204,14 +204,62 @@ body {
 }
 
 .credits-chip {
+  cursor: pointer;
   font-family: var(--mono);
   font-size: 0.85rem;
   letter-spacing: 0.05em;
   color: var(--gold);
   border: 1px solid rgba(255, 207, 63, 0.4);
   padding: 0.3rem 0.65rem;
+  background-color: transparent;
   text-shadow: 0 0 10px rgba(255, 207, 63, 0.4);
   white-space: nowrap;
+  transition: border-color 0.2s;
+}
+
+.credits-chip:hover {
+  border-color: var(--gold);
+}
+
+.sign-in-btn {
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: #001318;
+  background-color: var(--cyan);
+  border: 1px solid var(--cyan);
+  padding: 0.35rem 0.7rem;
+  box-shadow: 0 0 14px rgba(41, 230, 255, 0.4);
+  transition: box-shadow 0.2s;
+}
+
+.sign-in-btn:hover {
+  box-shadow: 0 0 24px rgba(41, 230, 255, 0.7);
+}
+
+.credits-info-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.credits-info-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+
+.credits-info-list li:last-child {
+  border-bottom: none;
 }
 
 .stipend-btn {
@@ -430,7 +478,6 @@ body {
 /* ---------- cards ---------- */
 
 .gcard {
-  --cut: 14px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -441,14 +488,6 @@ body {
     linear-gradient(160deg, var(--panel-2), var(--panel) 65%),
     var(--panel);
   border: 1px solid var(--rc);
-  clip-path: polygon(
-    var(--cut) 0,
-    100% 0,
-    100% calc(100% - var(--cut)),
-    calc(100% - var(--cut)) 100%,
-    0 100%,
-    0 var(--cut)
-  );
   box-shadow:
     inset 0 0 24px rgba(0, 0, 0, 0.55),
     0 0 14px color-mix(in srgb, var(--rc) 35%, transparent);
@@ -1292,6 +1331,27 @@ body {
   border-color: var(--cyan);
 }
 
+.comms-row[data-locked] .comms-label {
+  color: var(--dim);
+}
+
+.comms-locked-value {
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+
+.comms-locked-row .comms-locked-text {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--dim);
+  line-height: 1.6;
+}
+
+.comms-row[data-locked] {
+  opacity: 0.75;
+}
+
 .comms-foot {
   margin-top: 2rem;
 }
@@ -1620,4 +1680,17 @@ body {
 .high-contrast .trophy-reward,
 .high-contrast .streak-chip {
   color: #fff;
+}
+
+.high-contrast .sign-in-btn {
+  background-color: #fff;
+  color: #000;
+  box-shadow: none;
+}
+
+.high-contrast .credits-info-list li,
+.high-contrast .comms-locked-value,
+.high-contrast .comms-locked-text {
+  color: #fff;
+  border-color: #fff;
 }

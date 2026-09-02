@@ -1,3 +1,4 @@
+import { SignInButton } from "@clerk/tanstack-react-start";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { GachaCardFace } from "#/components/gacha/GachaCard";
@@ -5,24 +6,26 @@ import { PullReveal } from "#/components/gacha/PullReveal";
 import { RatesModal } from "#/components/gacha/RatesModal";
 import { TypingGreeting } from "#/components/TypingGreeting";
 import { ALL_CARDS, CHARACTER_CARD } from "#/data/cards";
-import { resetSave, summon, useGacha } from "#/hooks/useGacha";
-import type { PullResult } from "#/lib/gacha";
+import type { RevealCard } from "#/hooks/useGacha";
+import { useGachaSession, useResetSave, useSummon } from "#/hooks/useGacha";
 import { PITY_SR, PITY_UR, PULL_COST, TEN_PULL_COST } from "#/lib/gacha";
 
 export const Route = createFileRoute("/")({ component: SummonPage });
 
 function SummonPage() {
-	const state = useGacha();
-	const [results, setResults] = useState<PullResult[]>([]);
+	const { status, state } = useGachaSession();
+	const summon = useSummon();
+	const resetSave = useResetSave();
+	const [results, setResults] = useState<RevealCard[]>([]);
 	const [ratesOpen, setRatesOpen] = useState(false);
 
 	const ownedCount = Object.keys(state.owned).length;
 	const srPity = Math.min(state.pitySr, PITY_SR);
 	const urPity = Math.min(state.pityUr, PITY_UR);
 
-	const doSummon = (count: 1 | 10) => {
-		const pulled = summon(count);
-		if (pulled) setResults(pulled);
+	const doSummon = async (count: 1 | 10) => {
+		const outcome = await summon(count);
+		if (outcome) setResults(outcome.results);
 	};
 
 	return (
@@ -37,12 +40,19 @@ function SummonPage() {
 					A SOFTWARE ENGINEER.
 				</p>
 
-				{state.characterAcquired ? (
+				{status === "signed-out" ? (
+					<div className="first-pull-callout">
+						<span className="first-pull-spark" aria-hidden="true">
+							✦
+						</span>
+						SIGN IN TO PLAY — PROGRESS SAVES TO YOUR ACCOUNT
+					</div>
+				) : state.characterAcquired ? (
 					<Link
 						to="/collection"
 						search={{ card: CHARACTER_CARD.id }}
 						className="summon-operator"
-						aria-label="View operator card in database"
+						aria-label="View operator card in inventory"
 					>
 						<span className="summon-operator-inner">
 							<GachaCardFace card={CHARACTER_CARD} state="owned" />
@@ -63,22 +73,32 @@ function SummonPage() {
 				</div>
 
 				<div className="summon-actions">
-					<button
-						type="button"
-						className="btn btn-neon btn-lg"
-						disabled={state.credits < PULL_COST}
-						onClick={() => doSummon(1)}
-					>
-						SUMMON ×1 — {PULL_COST}◈
-					</button>
-					<button
-						type="button"
-						className="btn btn-magenta btn-lg"
-						disabled={state.credits < TEN_PULL_COST}
-						onClick={() => doSummon(10)}
-					>
-						SUMMON ×10 — {TEN_PULL_COST}◈
-					</button>
+					{status === "signed-out" ? (
+						<SignInButton mode="modal">
+							<button type="button" className="btn btn-neon btn-lg">
+								SIGN IN TO SUMMON
+							</button>
+						</SignInButton>
+					) : (
+						<>
+							<button
+								type="button"
+								className="btn btn-neon btn-lg"
+								disabled={state.credits < PULL_COST}
+								onClick={() => doSummon(1)}
+							>
+								SUMMON ×1 — {PULL_COST}◈
+							</button>
+							<button
+								type="button"
+								className="btn btn-magenta btn-lg"
+								disabled={state.credits < TEN_PULL_COST}
+								onClick={() => doSummon(10)}
+							>
+								SUMMON ×10 — {TEN_PULL_COST}◈
+							</button>
+						</>
+					)}
 					<button
 						type="button"
 						className="btn btn-ghost"
@@ -91,35 +111,42 @@ function SummonPage() {
 				<dl className="summon-stats">
 					<div>
 						<dt>PULLS</dt>
-						<dd>{state.totalPulls}</dd>
+						<dd>{status === "ready" ? state.totalPulls : "—"}</dd>
 					</div>
 					<div>
-						<dt>COLLECTION</dt>
+						<dt>INVENTORY</dt>
 						<dd>
-							{ownedCount}/{ALL_CARDS.length}
+							{status === "ready" ? ownedCount : "—"}/{ALL_CARDS.length}
 						</dd>
 					</div>
 					<div>
 						<dt>CREDITS</dt>
-						<dd>{state.credits}◈</dd>
+						<dd>{status === "ready" ? `${state.credits}◈` : "—"}</dd>
 					</div>
 				</dl>
 
 				<p className="summon-foot">
 					<Link to="/collection" className="neon-link">
-						VIEW DATABASE ▸
+						VIEW INVENTORY ▸
 					</Link>
-					<span className="dim"> — or — </span>
-					<button
-						type="button"
-						className="linklike dim"
-						onClick={() => {
-							if (window.confirm("Wipe save? All cards and credits are lost."))
-								resetSave();
-						}}
-					>
-						WIPE SAVE
-					</button>
+					{status === "ready" && (
+						<>
+							<span className="dim"> — or — </span>
+							<button
+								type="button"
+								className="linklike dim"
+								onClick={() => {
+									if (
+										window.confirm("Wipe save? All cards and credits are lost.")
+									) {
+										resetSave();
+									}
+								}}
+							>
+								WIPE SAVE
+							</button>
+						</>
+					)}
 				</p>
 			</section>
 

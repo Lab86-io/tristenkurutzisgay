@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { StatBars } from "#/components/gacha/CardDetail";
 import { CHARACTER_CARD } from "#/data/cards";
-import { useGacha } from "#/hooks/useGacha";
+import { useGachaSession } from "#/hooks/useGacha";
 import { ACHIEVEMENTS } from "#/lib/achievements";
 
 export const Route = createFileRoute("/about")({
@@ -25,7 +25,7 @@ const AFFILIATIONS = [
 ];
 
 function DossierPage() {
-	const state = useGacha();
+	const { state } = useGachaSession();
 	return (
 		<div className="dossier-page">
 			<h1 className="page-title font-myfont">DOSSIER</h1>

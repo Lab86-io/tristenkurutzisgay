@@ -198,8 +198,8 @@ export const CARD_POOL: GachaCard[] = [
 		weight: 1,
 		tagline: "PERSONAL PROJECT",
 		description:
-			"The site you're playing right now. Built with TanStack Start (React), Tailwind, and GT Walsheim — a fully client-side gacha experience. No data leaves your browser.",
-		tags: ["TANSTACK START", "REACT", "TYPESCRIPT", "TAILWIND"],
+			"The site you're playing right now. Built with TanStack Start (React), Convex, and Clerk — every pull is server-authoritative and progress saves to your account.",
+		tags: ["TANSTACK START", "REACT", "CONVEX", "CLERK"],
 		links: [
 			{
 				label: "GITHUB ↗",

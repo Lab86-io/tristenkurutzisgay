@@ -1,3 +1,4 @@
+import { ClerkProvider, useAuth } from "@clerk/tanstack-react-start";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import {
 	createRootRoute,
@@ -7,10 +8,16 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { ConvexReactClient } from "convex/react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
 
 import { Hud } from "#/components/gacha/Hud";
 import { Toasts } from "#/components/gacha/Toasts";
 import appCss from "../styles.css?url";
+
+const convexUrl = import.meta.env.VITE_CONVEX_URL ?? "";
+const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ?? "";
+const convexClient = convexUrl ? new ConvexReactClient(convexUrl) : null;
 
 const SITE_URL = "https://tristenkurutzisgay.tech";
 const TITLE = "TRISTEN KURUTZ — SUMMONS";
@@ -145,13 +152,23 @@ function NotFound() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+	const content = convexClient ? (
+		<ClerkProvider publishableKey={clerkPublishableKey}>
+			<ConvexProviderWithClerk client={convexClient} useAuth={useAuth}>
+				{children}
+			</ConvexProviderWithClerk>
+		</ClerkProvider>
+	) : (
+		children
+	);
+
 	return (
 		<html lang="en">
 			<head>
 				<HeadContent />
 			</head>
 			<body>
-				{children}
+				{content}
 				{import.meta.env.DEV && (
 					<TanStackDevtools
 						config={{

@@ -1,10 +1,11 @@
+import { SignInButton } from "@clerk/tanstack-react-start";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { CardDetail } from "#/components/gacha/CardDetail";
 import { GachaCardFace } from "#/components/gacha/GachaCard";
 import { Modal } from "#/components/gacha/Modal";
 import { ALL_CARDS, CARD_BY_ID, RARITY_ORDER, type Rarity } from "#/data/cards";
-import { useGacha } from "#/hooks/useGacha";
+import { useGachaSession } from "#/hooks/useGacha";
 
 type CollectionSearch = { card?: string };
 
@@ -13,13 +14,13 @@ export const Route = createFileRoute("/collection")({
 		card: typeof search.card === "string" ? search.card : undefined,
 	}),
 	head: () => ({
-		meta: [{ title: "DATABASE — TRISTEN KURUTZ" }],
+		meta: [{ title: "INVENTORY — TRISTEN KURUTZ" }],
 	}),
 	component: CollectionPage,
 });
 
 function CollectionPage() {
-	const state = useGacha();
+	const { status, state } = useGachaSession();
 	const search = Route.useSearch();
 	const navigate = useNavigate({ from: Route.fullPath });
 	const [rarityFilter, setRarityFilter] = useState<Rarity | "ALL">("ALL");
@@ -38,11 +39,27 @@ function CollectionPage() {
 
 	return (
 		<div className="collection-page">
-			<h1 className="page-title font-myfont">DATABASE</h1>
-			<p className="section-sub">
-				&gt;_ {Object.keys(state.owned).length}/{ALL_CARDS.length} RECORDS
-				DECRYPTED. PULL TO UNLOCK THE REST.
-			</p>
+			<h1 className="page-title font-myfont">INVENTORY</h1>
+			{status === "ready" ? (
+				<p className="section-sub">
+					&gt;_ {Object.keys(state.owned).length}/{ALL_CARDS.length} RECORDS
+					DECRYPTED. PULL TO UNLOCK THE REST.
+				</p>
+			) : (
+				<p className="section-sub">
+					&gt;_{" "}
+					{status === "signed-out" ? (
+						<SignInButton mode="modal">
+							<button type="button" className="linklike neon-link">
+								SIGN IN
+							</button>
+						</SignInButton>
+					) : (
+						<span>CONNECTING…</span>
+					)}{" "}
+					TO DECRYPT RECORDS. YOUR INVENTORY SAVES TO YOUR ACCOUNT.
+				</p>
+			)}
 
 			<div className="filter-row">
 				{(["ALL", ...RARITY_ORDER] as const).map((filter) => (

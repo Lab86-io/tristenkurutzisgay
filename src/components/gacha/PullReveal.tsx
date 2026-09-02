@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import type { PullResult } from "#/lib/gacha";
-import { gachaStore, TEN_PULL_COST } from "#/lib/gacha";
+import { type RevealCard, useGachaSession } from "#/hooks/useGacha";
+import { TEN_PULL_COST } from "#/lib/gacha";
 import { sfx } from "#/lib/sfx";
 import { CardBack, GachaCardFace } from "./GachaCard";
 
@@ -13,10 +13,11 @@ export function PullReveal({
 	onClose,
 	onSummonAgain,
 }: {
-	results: PullResult[];
+	results: RevealCard[];
 	onClose: () => void;
 	onSummonAgain: (count: 1 | 10) => void;
 }) {
+	const { state } = useGachaSession();
 	const dialogRef = useRef<HTMLDialogElement>(null);
 	const [revealed, setRevealed] = useState(0);
 	const [reducedMotion, setReducedMotion] = useState(false);
@@ -64,7 +65,7 @@ export function PullReveal({
 	}, [results, revealed]);
 
 	const done = revealed >= results.length;
-	const credits = gachaStore.getSnapshot().credits;
+	const credits = state.credits;
 
 	const skip = () => setRevealed(results.length);
 
@@ -143,7 +144,7 @@ export function PullReveal({
 							SUMMON ×1
 						</button>
 						<Link to="/collection" className="btn btn-ghost" onClick={onClose}>
-							DATABASE ▸
+							INVENTORY ▸
 						</Link>
 						<button type="button" className="btn btn-ghost" onClick={onClose}>
 							CLOSE

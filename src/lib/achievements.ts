@@ -1,5 +1,4 @@
-import { ALL_CARDS } from "#/data/cards";
-import type { PullResult } from "#/lib/gacha";
+import { ALL_CARDS } from "../data/cards";
 
 export interface Achievement {
 	id: string;
@@ -9,7 +8,7 @@ export interface Achievement {
 }
 
 export interface AchievementContext {
-	summoned?: PullResult[];
+	summoned?: Array<{ rarity: string }>;
 	count?: 1 | 10;
 	streak?: number;
 }
@@ -119,7 +118,7 @@ export function evaluateAchievements(
 	};
 
 	const summoned = context.summoned ?? [];
-	const rarities = new Set(summoned.map((result) => result.card.rarity));
+	const rarities = new Set(summoned.map((result) => result.rarity));
 	const ownedCount = Object.keys(state.owned).length;
 
 	grant("first-contact", summoned.length > 0);
@@ -132,9 +131,9 @@ export function evaluateAchievements(
 			summoned.length === 10 &&
 			summoned.every(
 				(result) =>
-					result.card.rarity === "UR" ||
-					result.card.rarity === "SSR" ||
-					result.card.rarity === "SR",
+					result.rarity === "UR" ||
+					result.rarity === "SSR" ||
+					result.rarity === "SR",
 			),
 	);
 	grant("archive-10", ownedCount >= 10);
