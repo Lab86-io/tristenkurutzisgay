@@ -1,13 +1,20 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
-import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+	createRootRoute,
+	HeadContent,
+	Link,
+	Outlet,
+	Scripts,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
+import { Hud } from "#/components/gacha/Hud";
 import appCss from "../styles.css?url";
 
 const SITE_URL = "https://tristenkurutzisgay.tech";
-const TITLE = "Tristen Kurutz — Software Engineer";
+const TITLE = "TRISTEN KURUTZ — SUMMONS";
 const DESCRIPTION =
-	"Tristen Kurutz — software engineering student at RIT, graduating Dec 2026. Experience, projects, and contact.";
+	"A gacha-style portfolio. Spend credits, pull cards, and decrypt the career of Tristen Kurutz — software engineering student at RIT, graduating Dec 2026.";
 const OG_IMAGE = `${SITE_URL}/og.png`;
 
 const personSchema = {
@@ -54,7 +61,7 @@ export const Route = createRootRoute({
 			},
 			{
 				name: "theme-color",
-				content: "#44403c",
+				content: "#060911",
 			},
 			{ content: TITLE, property: "og:title" },
 			{ content: DESCRIPTION, property: "og:description" },
@@ -64,7 +71,7 @@ export const Route = createRootRoute({
 			{ content: "1200", property: "og:image:width" },
 			{ content: "630", property: "og:image:height" },
 			{
-				content: "Tristen Kurutz — Software Engineering, RIT '26",
+				content: "TRISTEN KURUTZ — SUMMONS. A gacha-style portfolio.",
 				property: "og:image:alt",
 			},
 			{ content: "Tristen Kurutz", property: "og:site_name" },
@@ -100,8 +107,40 @@ export const Route = createRootRoute({
 			{ type: "application/ld+json", children: JSON.stringify(personSchema) },
 		],
 	}),
+	component: RootLayout,
+	notFoundComponent: NotFound,
 	shellComponent: RootDocument,
 });
+
+function RootLayout() {
+	return (
+		<>
+			<Hud />
+			<main id="main" className="site-main">
+				<Outlet />
+			</main>
+			<footer className="site-footer">
+				<span>© 2026 TRISTEN KURUTZ — NO REFUNDS ON PULLS</span>
+				<span className="dim">RATES ARE PUBLISHED. PITY IS REAL.</span>
+			</footer>
+			<div className="scanlines" aria-hidden="true" />
+		</>
+	);
+}
+
+function NotFound() {
+	return (
+		<div className="notfound-page">
+			<h1 className="page-title font-myfont">SIGNAL LOST</h1>
+			<p className="section-sub">
+				&gt;_ ERR 404: RECORD NOT FOUND IN DATABASE.
+			</p>
+			<Link to="/" className="btn btn-neon">
+				RETURN TO SUMMON ▸
+			</Link>
+		</div>
+	);
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
