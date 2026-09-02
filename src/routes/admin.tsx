@@ -17,7 +17,7 @@ export const Route = createFileRoute("/admin")({
 
 const OWNER_EMAILS = (import.meta.env.VITE_OWNER_EMAILS ?? "tristenkurutz@gmail.com")
 	.split(",")
-	.map((email) => email.trim().toLowerCase());
+	.map((email: string) => email.trim().toLowerCase());
 
 interface CardDraft {
 	id: string;
