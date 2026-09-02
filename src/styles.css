@@ -692,6 +692,12 @@ body {
   font-size: clamp(2.6rem, 8vw, 4.6rem);
   color: #fff;
   margin: 0;
+  /* reserve a fixed block so the typewriter never shifts layout */
+  height: 1.3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
   text-shadow: 0 0 30px rgba(41, 230, 255, 0.4);
 }
 
@@ -1415,14 +1421,12 @@ body {
 .typing-line {
   display: inline-block;
   min-height: 1em;
-  min-width: 5ch;
 }
 
 .typing-text {
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
-  min-width: 5ch;
   border-right: 2px solid var(--cyan);
   line-height: 1;
   padding-bottom: 0.12em;
@@ -2073,4 +2077,90 @@ html.gold-mode body {
   font-size: 0.75rem;
   color: var(--magenta);
   margin: 0.75rem 0;
+}
+
+/* ---------- star + type icons ---------- */
+
+
+/* ---------- animated rarity orbs (replaces star icons) ---------- */
+
+.orb-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.orb {
+  display: inline-block;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle at 35% 30%,
+    color-mix(in srgb, var(--rc, #9aa7b8) 85%, white 15%),
+    var(--rc, #9aa7b8) 65%
+  );
+  box-shadow: 0 0 6px color-mix(in srgb, var(--rc, #9aa7b8) 70%, transparent);
+  animation: orb-pulse 1.8s ease-in-out infinite;
+}
+
+.orb-label {
+  margin-left: 4px;
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.14em;
+  color: var(--rc, var(--dim));
+  opacity: 0.9;
+}
+
+.orb-locked .orb {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: none;
+  animation: none;
+}
+
+@keyframes orb-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+    box-shadow: 0 0 10px color-mix(in srgb, var(--rc, #9aa7b8) 90%, transparent);
+  }
+}
+
+/* animated type icons (emoji) */
+.type-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+
+.type-icon {
+  display: inline-block;
+  animation: icon-float 2.6s ease-in-out infinite;
+}
+
+.type-row:nth-child(2) .type-icon {
+  animation-delay: 0.7s;
+}
+
+@keyframes icon-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.orb-locked .orb-label {
+  display: none;
 }

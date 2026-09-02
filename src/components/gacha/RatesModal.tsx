@@ -1,5 +1,6 @@
 import { ALL_CARDS, RARITY_META, RARITY_ORDER } from "#/data/cards";
 import { PITY_SR, PITY_UR } from "#/lib/gacha";
+import { RarityOrbs } from "./GachaCard";
 import { Modal } from "./Modal";
 
 export function RatesModal({
@@ -28,7 +29,9 @@ export function RatesModal({
 				<tbody>
 					{RARITY_ORDER.map((rarity) => (
 						<tr key={rarity} data-rarity={rarity}>
-							<td className="rates-rarity">{rarity}</td>
+							<td className="rates-rarity">
+								<RarityOrbs rarity={rarity} size={9} />
+							</td>
 							<td>{(RARITY_META[rarity].rate * 100).toFixed(0)}%</td>
 							<td>
 								{ALL_CARDS.filter((card) => card.rarity === rarity).length}

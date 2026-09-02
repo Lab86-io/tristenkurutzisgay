@@ -28,6 +28,15 @@ export interface GachaCard {
 
 export const RARITY_ORDER: Rarity[] = ["UR", "SSR", "SR", "R", "C"];
 
+/** rarity level per tier — drives the orb pips (C=1 … UR=5) */
+export const RARITY_LEVEL: Record<Rarity, number> = {
+	UR: 5,
+	SSR: 4,
+	SR: 3,
+	R: 2,
+	C: 1,
+};
+
 export const RARITY_META: Record<
 	Rarity,
 	{ label: string; rate: number; dupeRefund: number }

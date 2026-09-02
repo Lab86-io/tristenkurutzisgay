@@ -35,7 +35,7 @@ export const ACHIEVEMENTS: Achievement[] = [
 	},
 	{
 		id: "first-ur",
-		name: "🌟 GOLDEN EYE",
+		name: "👑 GOLDEN EYE",
 		description: "Acquire your first UR.",
 		reward: 75,
 	},

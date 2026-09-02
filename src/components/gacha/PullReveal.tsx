@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { type RevealCard, useGachaSession } from "#/hooks/useGacha";
-import { TEN_PULL_COST } from "#/lib/gacha";
+import { PULL_COST, TEN_PULL_COST } from "#/lib/gacha";
 import { sfx } from "#/lib/sfx";
 import { CardBack, GachaCardFace } from "./GachaCard";
 
@@ -147,9 +147,10 @@ export function PullReveal({
 						<button
 							type="button"
 							className="btn btn-ghost"
+							disabled={credits < PULL_COST}
 							onClick={() => onSummonAgain(1)}
 						>
-							SUMMON ×1
+							SUMMON ×1 — {PULL_COST}◈
 						</button>
 						<Link to="/collection" className="btn btn-ghost" onClick={onClose}>
 							INVENTORY ▸

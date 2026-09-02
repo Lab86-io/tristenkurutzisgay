@@ -1,4 +1,5 @@
-import { type GachaCard, RARITY_META } from "#/data/cards";
+import type { GachaCard } from "#/data/cards";
+import { RarityOrbs } from "./GachaCard";
 
 export function StatBars({
 	stats,
@@ -32,10 +33,7 @@ export function CardDetail({
 	return (
 		<div className="card-detail" data-rarity={card.rarity}>
 			<header className="card-detail-head">
-				<span className="gcard-rarity">{card.rarity}</span>
-				<span className="card-detail-meta">
-					{RARITY_META[card.rarity].label}
-				</span>
+				<RarityOrbs rarity={card.rarity} size={10} />
 			</header>
 			<h3 className="card-detail-name">{card.name}</h3>
 			<p className="card-detail-tagline">{card.tagline}</p>

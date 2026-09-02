@@ -99,7 +99,7 @@ function DossierPage() {
 								data-locked={unlockedAt ? undefined : true}
 							>
 								<span className="trophy-name">
-									{unlockedAt ? "★" : "☆"} {achievement.name}
+									{unlockedAt ? "✓" : "·"} {achievement.name}
 								</span>
 								<span className="trophy-desc">{achievement.description}</span>
 								<span className="trophy-reward">

@@ -145,7 +145,7 @@ export function Hud() {
 						onClick={() => setGoldMode((value) => !value)}
 						aria-pressed={goldMode && goldUnlocked}
 					>
-						✦
+						◆
 					</button>
 					<ContrastToggle checked={contrast} onCheckedChange={setContrast} />
 					{status === "signed-out" ? (

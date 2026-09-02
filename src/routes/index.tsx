@@ -44,7 +44,7 @@ function SummonPage() {
 				{status === "signed-out" ? (
 					<div className="first-pull-callout">
 						<span className="first-pull-spark" aria-hidden="true">
-							✦
+							⚡
 						</span>
 						Sign in to play — progress saves to your account.
 					</div>
@@ -62,7 +62,7 @@ function SummonPage() {
 				) : (
 					<div className="first-pull-callout">
 						<span className="first-pull-spark" aria-hidden="true">
-							✦
+							⚡
 						</span>
 						First summon is free — and it's always the UR operator card.
 					</div>
