@@ -3,7 +3,11 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ContrastToggle } from "#/components/ContrastToggle";
 import { Modal } from "#/components/gacha/Modal";
-import { useClaimScan, useClaimStipend, useGachaSession } from "#/hooks/useGacha";
+import {
+	useClaimScan,
+	useClaimStipend,
+	useGachaSession,
+} from "#/hooks/useGacha";
 import { STIPEND_AMOUNT } from "#/lib/gacha";
 import { sfx } from "#/lib/sfx";
 
@@ -57,7 +61,6 @@ export function Hud() {
 				state.lastStipendDate !== new Date().toISOString().slice(0, 10),
 		);
 	}, [status, state.lastStipendDate]);
-
 
 	useEffect(() => {
 		if (status === "ready") scan(pathname);
