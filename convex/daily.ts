@@ -16,8 +16,8 @@ export const DAILY_PUZZLES: DailyPuzzle[] = [
 ];
 
 export function todayPuzzle(now = Date.now()): DailyPuzzle {
-	const day = Math.floor(now / 86_400_000);
-	return DAILY_PUZZLES[day % DAILY_PUZZLES.length];
+	const hour = Math.floor(now / 3_600_000);
+	return DAILY_PUZZLES[hour % DAILY_PUZZLES.length];
 }
 
 export function caesar(text: string, shift: number): string {

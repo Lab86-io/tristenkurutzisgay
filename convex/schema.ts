@@ -23,6 +23,11 @@ export default defineSchema({
 		minedToday: v.optional(v.number()),
 		minedDate: v.optional(v.string()),
 		contactRewarded: v.optional(v.boolean()),
+		opHour: v.optional(v.string()),
+		opCipher: v.optional(v.boolean()),
+		opRecall: v.optional(v.boolean()),
+		opScanned: v.optional(v.array(v.string())),
+		// legacy per-day fields kept so older documents still validate
 		dailyDate: v.optional(v.string()),
 		dailyCipher: v.optional(v.boolean()),
 		dailyRecall: v.optional(v.boolean()),

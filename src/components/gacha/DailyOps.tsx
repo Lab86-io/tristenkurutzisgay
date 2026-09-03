@@ -36,14 +36,14 @@ export function DailyOps() {
 	return (
 		<div className="daily-ops">
 			<div className="daily-head">
-				<h3 className="panel-title">Daily ops</h3>
-				<span className="dim daily-note">reset at midnight UTC</span>
+				<h3 className="panel-title">Hourly ops</h3>
+				<span className="dim daily-note">resets every hour</span>
 			</div>
 
 			{/* cipher */}
 			<div className="daily-op" data-done={daily.cipherDone}>
 				<div className="daily-op-head">
-					<span className="daily-op-name">Decryption cipher</span>
+					<span className="daily-op-name">Caesar-3 cipher</span>
 					<span className="daily-op-reward">+{CIPHER_REWARD}◈</span>
 				</div>
 				{daily.cipherDone ? (

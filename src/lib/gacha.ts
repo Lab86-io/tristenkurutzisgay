@@ -9,9 +9,9 @@ export const MINE_PER_CLICK = 1;
 export const MINE_CRIT_CHANCE = 0.1;
 export const MINE_CRIT_BONUS = 4;
 export const MINE_DAILY_CAP = 300;
-export const CIPHER_REWARD = 120;
-export const RECALL_REWARD = 80;
-export const SCAN_REWARD = 10;
+export const CIPHER_REWARD = 200;
+export const RECALL_REWARD = 150;
+export const SCAN_REWARD = 25;
 export const SCAN_MAX = 3;
 export const RECALL_MAX_MOVES = 20;
 export const RECALL_PAIRS = 6;
@@ -36,10 +36,6 @@ export interface GachaState {
 	achievements: Record<string, number>;
 	minedToday: number;
 	contactRewarded: boolean;
-	dailyDate: string | null;
-	dailyCipher: boolean;
-	dailyRecall: boolean;
-	dailyScanned: string[];
 }
 
 export interface PullResult {
@@ -69,10 +65,6 @@ export function defaultGachaState(): GachaState {
 		achievements: {},
 		minedToday: 0,
 		contactRewarded: false,
-		dailyDate: null,
-		dailyCipher: false,
-		dailyRecall: false,
-		dailyScanned: [],
 	};
 }
 

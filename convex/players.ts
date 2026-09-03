@@ -36,10 +36,6 @@ interface PlayerState {
 	achievements: Record<string, number>;
 	minedToday: number;
 	contactRewarded: boolean;
-	dailyDate: string | null;
-	dailyCipher: boolean;
-	dailyRecall: boolean;
-	dailyScanned: string[];
 }
 
 function publicState(player: PlayerDoc): PlayerState {
@@ -55,10 +51,7 @@ function publicState(player: PlayerDoc): PlayerState {
 		achievements: player.achievements,
 		minedToday: player.minedDate === new Date().toISOString().slice(0, 10) ? (player.minedToday ?? 0) : 0,
 		contactRewarded: player.contactRewarded ?? false,
-		dailyDate: player.dailyDate ?? null,
-		dailyCipher: player.dailyCipher ?? false,
-		dailyRecall: player.dailyRecall ?? false,
-		dailyScanned: player.dailyDate === new Date().toISOString().slice(0, 10) ? (player.dailyScanned ?? []) : [],
+
 	};
 }
 
@@ -371,10 +364,10 @@ export const resetSave = mutation({
 			minedToday: 0,
 			minedDate: undefined,
 			contactRewarded: false,
-			dailyDate: undefined,
-			dailyCipher: false,
-			dailyRecall: false,
-			dailyScanned: [],
+			opHour: undefined,
+			opCipher: false,
+			opRecall: false,
+			opScanned: [],
 			createdAt: player.createdAt,
 			updatedAt: now,
 		});
@@ -503,14 +496,14 @@ export const submitExam = mutation({
 
 // ---------- daily ops: cipher, recall, scanner ----------
 
-function dailyFlags(player: PlayerDoc) {
-	const today = new Date().toISOString().slice(0, 10);
-	const fresh = player.dailyDate === today;
+function opFlags(player: PlayerDoc) {
+	const hour = new Date().toISOString().slice(0, 13);
+	const fresh = player.opHour === hour;
 	return {
-		today,
-		cipher: fresh ? (player.dailyCipher ?? false) : false,
-		recall: fresh ? (player.dailyRecall ?? false) : false,
-		scanned: fresh ? (player.dailyScanned ?? []) : [],
+		hour,
+		cipher: fresh ? (player.opCipher ?? false) : false,
+		recall: fresh ? (player.opRecall ?? false) : false,
+		scanned: fresh ? (player.opScanned ?? []) : [],
 	};
 }
 
@@ -523,7 +516,7 @@ export const getDailyState = query({
 		if (!player) {
 			return { signedIn: false as const, cipherDone: false, recallDone: false, scanned: [], cipherText, hint: puzzle.hint };
 		}
-		const flags = dailyFlags(player);
+		const flags = opFlags(player);
 		return {
 			signedIn: true as const,
 			cipherDone: flags.cipher,
@@ -539,7 +532,7 @@ export const solveCipher = mutation({
 	args: { answer: v.string() },
 	handler: async (ctx, args) => {
 		const player = await ensurePlayer(ctx);
-		const flags = dailyFlags(player);
+		const flags = opFlags(player);
 		if (flags.cipher) {
 			return { solved: false as const, reason: "already_today" as const, state: publicState(player) };
 		}
@@ -550,9 +543,9 @@ export const solveCipher = mutation({
 		const updated: PlayerDoc = {
 			...player,
 			credits: player.credits + CIPHER_REWARD,
-			dailyDate: flags.today,
-			dailyCipher: true,
-			dailyScanned: flags.scanned,
+			opHour: flags.hour,
+			opCipher: true,
+			opScanned: flags.scanned,
 			updatedAt: Date.now(),
 		};
 		await ctx.db.replace(player._id, updated);
@@ -564,7 +557,7 @@ export const claimRecall = mutation({
 	args: { moves: v.number() },
 	handler: async (ctx, args) => {
 		const player = await ensurePlayer(ctx);
-		const flags = dailyFlags(player);
+		const flags = opFlags(player);
 		if (flags.recall) {
 			return { claimed: false as const, reason: "already_today" as const, state: publicState(player) };
 		}
@@ -574,9 +567,9 @@ export const claimRecall = mutation({
 		const updated: PlayerDoc = {
 			...player,
 			credits: player.credits + RECALL_REWARD,
-			dailyDate: flags.today,
-			dailyRecall: true,
-			dailyScanned: flags.scanned,
+			opHour: flags.hour,
+			opRecall: true,
+			opScanned: flags.scanned,
 			updatedAt: Date.now(),
 		};
 		await ctx.db.replace(player._id, updated);
@@ -588,7 +581,7 @@ export const claimScan = mutation({
 	args: { page: v.string() },
 	handler: async (ctx, args) => {
 		const player = await ensurePlayer(ctx);
-		const flags = dailyFlags(player);
+		const flags = opFlags(player);
 		const page = args.page.trim().slice(0, 40);
 		const allowed = ["/", "/collection", "/about", "/comms"];
 		if (!allowed.includes(page)) {
@@ -601,10 +594,10 @@ export const claimScan = mutation({
 		const updated: PlayerDoc = {
 			...player,
 			credits: player.credits + SCAN_REWARD,
-			dailyDate: flags.today,
-			dailyCipher: flags.cipher,
-			dailyRecall: flags.recall,
-			dailyScanned: scanned,
+			opHour: flags.hour,
+			opCipher: flags.cipher,
+			opRecall: flags.recall,
+			opScanned: scanned,
 			updatedAt: Date.now(),
 		};
 		await ctx.db.replace(player._id, updated);
