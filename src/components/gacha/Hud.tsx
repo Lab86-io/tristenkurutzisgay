@@ -1,9 +1,9 @@
 import { SignInButton, UserButton } from "@clerk/tanstack-react-start";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ContrastToggle } from "#/components/ContrastToggle";
 import { Modal } from "#/components/gacha/Modal";
-import { useClaimStipend, useGachaSession } from "#/hooks/useGacha";
+import { useClaimScan, useClaimStipend, useGachaSession } from "#/hooks/useGacha";
 import { STIPEND_AMOUNT } from "#/lib/gacha";
 import { sfx } from "#/lib/sfx";
 
@@ -21,10 +21,13 @@ const GOLD_UNLOCK_AT = 15;
 export function Hud() {
 	const { status, state } = useGachaSession();
 	const claimStipend = useClaimStipend();
+	const scan = useClaimScan();
 	const [stipendReady, setStipendReady] = useState(false);
 	const [contrast, setContrast] = useState(false);
 	const [muted, setMuted] = useState(false);
 	const [creditsInfoOpen, setCreditsInfoOpen] = useState(false);
+	const location = useLocation();
+	const pathname = location.pathname;
 	const [goldMode, setGoldMode] = useState(false);
 
 	const goldUnlocked =
@@ -54,6 +57,11 @@ export function Hud() {
 				state.lastStipendDate !== new Date().toISOString().slice(0, 10),
 		);
 	}, [status, state.lastStipendDate]);
+
+
+	useEffect(() => {
+		if (status === "ready") scan(pathname);
+	}, [status, pathname, scan]);
 
 	useEffect(() => {
 		setMuted(sfx.isMuted());
