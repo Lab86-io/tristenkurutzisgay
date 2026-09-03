@@ -94,7 +94,7 @@ export const CARD_POOL: GachaCard[] = [
 	// ---- SSR (5%) ----
 	{
 		id: "prj-contrax",
-		name: "CONTRAX",
+		name: "Contrax",
 		type: "PROJECT",
 		rarity: "SSR",
 		weight: 1,
@@ -111,7 +111,7 @@ export const CARD_POOL: GachaCard[] = [
 	},
 	{
 		id: "prj-bird-scholar",
-		name: "BIRD SCHOLAR",
+		name: "Bird Scholar",
 		type: "PROJECT",
 		rarity: "SSR",
 		weight: 1,
@@ -203,7 +203,7 @@ export const CARD_POOL: GachaCard[] = [
 	},
 	{
 		id: "prj-website",
-		name: "PERSONAL WEBSITE",
+		name: "Personal website",
 		type: "PROJECT",
 		rarity: "SR",
 		weight: 1,
@@ -220,7 +220,7 @@ export const CARD_POOL: GachaCard[] = [
 	},
 	{
 		id: "prj-bridge",
-		name: "SLACK-DISCORD BRIDGE",
+		name: "Slack–Discord bridge",
 		type: "PROJECT",
 		rarity: "SR",
 		weight: 1,
@@ -326,7 +326,7 @@ export const CARD_POOL: GachaCard[] = [
 	},
 	{
 		id: "skill-spring",
-		name: "SPRING",
+		name: "Spring",
 		type: "SKILL",
 		rarity: "SR",
 		weight: 1,

@@ -2360,7 +2360,7 @@ html.gold-mode body {
 /* ---------- featured carousel ---------- */
 
 .featured {
-  max-width: 44rem;
+  max-width: 52rem;
   margin: 0 auto 2.5rem;
 }
 
@@ -2405,15 +2405,78 @@ html.gold-mode body {
   gap: 1rem;
 }
 
-.featured-slide {
-  flex: 0 0 46%;
-  min-width: 0;
+.featured-wrap {
+  position: relative;
 }
 
-@media (max-width: 640px) {
-  .featured-slide {
-    flex: 0 0 70%;
-  }
+.featured-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.featured-link {
+  width: min(21rem, 82%);
+}
+
+.featured-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 24%;
+  z-index: 5;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.featured-zone-left {
+  left: 0;
+}
+
+.featured-zone-right {
+  right: 0;
+}
+
+.featured-zone::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 2px solid var(--cyan);
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+}
+
+.featured-zone-left::after {
+  left: 14%;
+  border-right: none;
+  border-top: none;
+  transform: rotate(45deg) scale(0.9);
+}
+
+.featured-zone-right::after {
+  right: 14%;
+  border-left: none;
+  border-bottom: none;
+  transform: rotate(45deg) scale(0.9);
+}
+
+.featured-zone:hover::after {
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
+}
+
+.featured-hint {
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  margin-top: 0.6rem;
 }
 
 .featured-link {
@@ -2424,6 +2487,10 @@ html.gold-mode body {
 
 .featured-link:hover {
   transform: translateY(-3px);
+}
+
+.featured-viewport {
+  z-index: 1;
 }
 
 .featured-arrows {
