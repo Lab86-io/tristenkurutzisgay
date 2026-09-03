@@ -10,7 +10,7 @@ import { api } from "../../convex/_generated/api";
 
 export const Route = createFileRoute("/admin")({
 	head: () => ({
-		meta: [{ title: "ADMIN — TRISTEN KURUTZ" }],
+		meta: [{ title: "Admin — Tristen Kurutz" }],
 	}),
 	component: AdminPage,
 });
@@ -94,7 +94,7 @@ function AdminPage() {
 	if (!isSignedIn) {
 		return (
 			<div className="admin-page">
-				<h1 className="page-title font-myfont">ADMIN</h1>
+				<h1 className="page-title font-myfont">Admin</h1>
 				<p className="section-sub">
 					<SignInButton mode="modal">
 						<button type="button" className="linklike neon-link">
@@ -110,7 +110,7 @@ function AdminPage() {
 	if (!isOwner) {
 		return (
 			<div className="admin-page">
-				<h1 className="page-title font-myfont">ACCESS RESTRICTED</h1>
+				<h1 className="page-title font-myfont">Access restricted</h1>
 				<p className="section-sub">
 					Signed in as {email}. This console belongs to the operator.
 				</p>
@@ -155,10 +155,10 @@ function AdminPage() {
 					note: draft.note.trim() || undefined,
 				},
 			});
-			pushToast("CARD SAVED", draft.id, "green");
+			pushToast("Card saved", draft.id, "green");
 		} catch (error) {
 			pushToast(
-				"SAVE FAILED",
+				"Save failed",
 				error instanceof Error ? error.message : "",
 				"magenta",
 			);
@@ -170,10 +170,10 @@ function AdminPage() {
 		if (!window.confirm(`Delete ${id}? Players who own it keep it.`)) return;
 		try {
 			await removeCard({ id });
-			pushToast("CARD DELETED", id, "magenta");
+			pushToast("Card deleted", id, "magenta");
 		} catch (error) {
 			pushToast(
-				"DELETE FAILED",
+				"Delete failed",
 				error instanceof Error ? error.message : "",
 				"magenta",
 			);
@@ -182,7 +182,7 @@ function AdminPage() {
 
 	const newCardForm = newCard ? (
 		<section className="panel admin-new">
-			<h2 className="panel-title">NEW CARD</h2>
+			<h2 className="panel-title">New card</h2>
 			<CardEditor
 				draft={newCard}
 				onChange={(part) =>
@@ -216,13 +216,13 @@ function AdminPage() {
 				})
 			}
 		>
-			+ NEW CARD
+			+ New card
 		</button>
 	);
 
 	return (
 		<div className="admin-page">
-			<h1 className="page-title font-myfont">CARD ADMIN</h1>
+			<h1 className="page-title font-myfont">Card admin</h1>
 			<p className="section-sub">
 				{cards.length} records live in Convex. Edits apply to every future
 				summon instantly.
@@ -239,7 +239,7 @@ function AdminPage() {
 							<div className="admin-card-head">
 								<RarityOrbs rarity={draft.rarity} size={9} />
 								<span className="admin-card-id">{card.id}</span>
-								{dirty && <span className="admin-dirty">UNSAVED</span>}
+								{dirty && <span className="admin-dirty">Unsaved</span>}
 								<span className="admin-card-actions">
 									<button
 										type="button"
@@ -247,7 +247,7 @@ function AdminPage() {
 										disabled={saving === card.id}
 										onClick={() => save(draft)}
 									>
-										{saving === card.id ? "SAVING…" : "SAVE"}
+										{saving === card.id ? "Saving…" : "Save"}
 									</button>
 									{card.id !== "tk-character" && (
 										<button
@@ -273,7 +273,7 @@ function AdminPage() {
 			</div>
 
 			<section className="panel admin-inbox">
-				<h2 className="panel-title">TRANSMISSIONS</h2>
+				<h2 className="panel-title">Transmissions</h2>
 				{messages === undefined ? (
 					<p className="transmit-sub">Loading…</p>
 				) : messages.length === 0 ? (
@@ -445,7 +445,7 @@ function CardEditor({
 					disabled={saving || !draft.id.trim() || !draft.name.trim()}
 					onClick={onSave}
 				>
-					{saving ? "CREATING…" : "CREATE CARD"}
+					{saving ? "CREATING…" : "Create card"}
 				</button>
 			)}
 			{onDelete && (

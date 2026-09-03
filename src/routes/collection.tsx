@@ -15,7 +15,7 @@ export const Route = createFileRoute("/collection")({
 		card: typeof search.card === "string" ? search.card : undefined,
 	}),
 	head: () => ({
-		meta: [{ title: "INVENTORY — TRISTEN KURUTZ" }],
+		meta: [{ title: "Inventory — Tristen Kurutz" }],
 	}),
 	component: CollectionPage,
 });
@@ -39,7 +39,7 @@ function CollectionPage() {
 
 	return (
 		<div className="collection-page">
-			<h1 className="page-title font-myfont">INVENTORY</h1>
+			<h1 className="page-title font-myfont">Inventory</h1>
 			{status === "ready" ? (
 				<p className="section-sub">
 					{Object.keys(state.owned).length} of {cards.length} records decrypted

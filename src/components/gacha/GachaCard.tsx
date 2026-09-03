@@ -5,12 +5,12 @@ import {
 	type Rarity,
 } from "#/data/cards";
 
-const TYPE_ICON = {
-	CHARACTER: "🧑‍💻",
-	ROLE: "💼",
-	PROJECT: "📁",
-	SKILL: "⚡",
-} as const;
+const TYPE_LABEL: Record<GachaCard["type"], string> = {
+	CHARACTER: "Operator",
+	ROLE: "Role",
+	PROJECT: "Project",
+	SKILL: "Skill",
+};
 
 /**
  * Animated rarity orbs — glowing pips that pulse in sequence.
@@ -44,21 +44,29 @@ export function RarityOrbs({
 	);
 }
 
-export function TypeIcon({
-	type,
-	size = 12,
-}: {
-	type: GachaCard["type"];
-	size?: number;
-}) {
+export function TypeMarker({ type }: { type: GachaCard["type"] }) {
 	return (
 		<span className="type-row">
-			<span className="type-icon" style={{ fontSize: size }} aria-hidden="true">
-				{TYPE_ICON[type]}
-			</span>
-			{type}
+			<span
+				className={`type-marker type-marker-${type.toLowerCase()}`}
+				aria-hidden="true"
+			/>
+			{TYPE_LABEL[type]}
 		</span>
 	);
+}
+
+function monogram(name: string): string {
+	const words = name
+		.replace(/[^\w&.+\s-]/g, " ")
+		.split(/\s+/)
+		.filter(Boolean);
+	if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+	return words
+		.slice(0, 2)
+		.map((word) => word[0])
+		.join("")
+		.toUpperCase();
 }
 
 export function GachaCardFace({
@@ -86,9 +94,15 @@ export function GachaCardFace({
 						<span className="orb" style={{ width: 8, height: 8 }} />
 					</span>
 				) : (
-					<RarityOrbs rarity={card.rarity} />
+					<RarityOrbs rarity={card.rarity} size={8} />
 				)}
-				<TypeIcon type={card.type} />
+				<TypeMarker type={card.type} />
+			</div>
+			<div className="gcard-art" aria-hidden="true">
+				<span className="gcard-art-scan" />
+				<span className="gcard-art-mono">
+					{locked ? "?" : monogram(card.name)}
+				</span>
 			</div>
 			<div className="gcard-body">
 				{locked ? (
@@ -104,7 +118,7 @@ export function GachaCardFace({
 			</div>
 			<div className="gcard-bottom">
 				{locked ? (
-					<span className="gcard-locked-label">ENCRYPTED</span>
+					<span className="gcard-locked-label">Encrypted</span>
 				) : (
 					<>
 						<span className="gcard-tags">
@@ -127,22 +141,14 @@ export function CardBack({ tell }: { tell?: "SSR" | "UR" }) {
 				<span className="orb-row orb-locked" aria-hidden="true">
 					<span className="orb" style={{ width: 8, height: 8 }} />
 				</span>
-				<span className="type-row">
-					<span
-						className="type-icon"
-						style={{ fontSize: 12 }}
-						aria-hidden="true"
-					>
-						❔
-					</span>
-					DATA
-				</span>
+				<TypeMarker type="SKILL" />
 			</div>
-			<div className="gcard-body">
-				<span className="gcard-mono-mark">TK</span>
+			<div className="gcard-art">
+				<span className="gcard-art-scan" />
+				<span className="gcard-art-mono">TK</span>
 			</div>
 			<div className="gcard-bottom">
-				<span className="gcard-locked-label">DECRYPTING…</span>
+				<span className="gcard-locked-label">Decrypting…</span>
 			</div>
 		</div>
 	);

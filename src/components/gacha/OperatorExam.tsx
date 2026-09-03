@@ -83,8 +83,8 @@ export function OperatorExam() {
 			<h2 className="panel-title">OPERATOR EXAM</h2>
 			{alreadyPassed ? (
 				<p className="transmit-sub">
-					🎓 Passed — certified operator. Retakes available for the confident
-					and the bored.
+					Passed — certified operator. Retakes available for the confident and
+					the bored.
 				</p>
 			) : (
 				<p className="transmit-sub">

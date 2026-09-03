@@ -8,10 +8,10 @@ import { STIPEND_AMOUNT } from "#/lib/gacha";
 import { sfx } from "#/lib/sfx";
 
 const NAV_ITEMS = [
-	{ label: "SUMMON", to: "/" },
-	{ label: "INVENTORY", to: "/collection" },
-	{ label: "DOSSIER", to: "/about" },
-	{ label: "COMMS", to: "/comms" },
+	{ label: "Summon", to: "/" },
+	{ label: "Inventory", to: "/collection" },
+	{ label: "Dossier", to: "/about" },
+	{ label: "Comms", to: "/comms" },
 ] as const;
 
 const CONTRAST_KEY = "high-contrast";
@@ -112,7 +112,7 @@ export function Hud() {
 							className="stipend-btn"
 							onClick={() => claimStipend()}
 						>
-							UPLINK +{STIPEND_AMOUNT}◈
+							Uplink +{STIPEND_AMOUNT}◈
 						</button>
 					)}
 					<button

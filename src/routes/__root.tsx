@@ -135,8 +135,8 @@ function RootLayout() {
 				<Outlet />
 			</main>
 			<footer className="site-footer">
-				<span>© 2026 TRISTEN KURUTZ — NO REFUNDS ON PULLS</span>
-				<span className="dim">RATES ARE PUBLISHED. PITY IS REAL.</span>
+				<span>© 2026 Tristen Kurutz — no refunds on pulls</span>
+				<span className="dim">Rates are published. Pity is real.</span>
 			</footer>
 			<Toasts />
 			<div className="scanlines" aria-hidden="true" />
@@ -147,10 +147,10 @@ function RootLayout() {
 function NotFound() {
 	return (
 		<div className="notfound-page">
-			<h1 className="page-title font-myfont">SIGNAL LOST</h1>
+			<h1 className="page-title font-myfont">Signal lost</h1>
 			<p className="section-sub">That record doesn't exist.</p>
 			<Link to="/" className="btn btn-neon">
-				RETURN TO SUMMON ▸
+				Return to summon ▸
 			</Link>
 		</div>
 	);

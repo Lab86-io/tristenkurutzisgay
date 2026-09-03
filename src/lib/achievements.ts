@@ -19,79 +19,91 @@ export interface AchievementContext {
 export const ACHIEVEMENTS: Achievement[] = [
 	{
 		id: "first-contact",
-		name: "📞 FIRST CONTACT",
+		name: "FIRST CONTACT",
 		description: "Complete your first summon.",
 		reward: 25,
 	},
 	{
 		id: "first-sr",
-		name: "📡 SIGNAL ACQUIRED",
+		name: "SIGNAL ACQUIRED",
 		description: "Acquire your first SR or better.",
 		reward: 25,
 	},
 	{
 		id: "first-ssr",
-		name: "💎 RARE FIND",
+		name: "RARE FIND",
 		description: "Acquire your first SSR.",
 		reward: 50,
 	},
 	{
 		id: "first-ur",
-		name: "👑 GOLDEN EYE",
+		name: "GOLDEN EYE",
 		description: "Acquire your first UR.",
 		reward: 75,
 	},
 	{
 		id: "big-ten",
-		name: "🎰 BIG TEN",
+		name: "BIG TEN",
 		description: "Land a 10-pull where every card is SR or better.",
 		reward: 150,
 	},
 	{
 		id: "archive-10",
-		name: "🗂️ ARCHIVIST I",
+		name: "ARCHIVIST I",
 		description: "Decrypt 10 unique records.",
 		reward: 50,
 	},
 	{
 		id: "archive-25",
-		name: "🗂️ ARCHIVIST II",
+		name: "ARCHIVIST II",
 		description: "Decrypt 25 unique records.",
 		reward: 150,
 	},
 	{
 		id: "skill-tree",
-		name: "🌳 SKILL TREE",
+		name: "SKILL TREE",
 		description: "Acquire every SKILL record.",
 		reward: 100,
 	},
 	{
 		id: "shipped",
-		name: "🚀 SHIPPED",
+		name: "SHIPPED",
 		description: "Acquire every PROJECT record.",
 		reward: 125,
 	},
 	{
 		id: "hr-files",
-		name: "📎 HR COMPLIANT",
+		name: "HR COMPLIANT",
 		description: "Acquire every ROLE record.",
 		reward: 150,
 	},
 	{
 		id: "completionist",
-		name: "🏁 SYSTEM COMPLETE",
+		name: "SYSTEM COMPLETE",
 		description: "Decrypt the entire inventory.",
 		reward: 300,
 	},
 	{
 		id: "dedicated",
-		name: "🔥 DEDICATED",
+		name: "DEDICATED",
 		description: "Claim the daily uplink 7 days in a row.",
 		reward: 100,
 	},
 	{
+		id: "streak-3",
+		name: "PERSISTENT",
+		description: "Claim the daily uplink 3 days in a row.",
+		reward: 100,
+	},
+	{
+		id: "streak-5",
+		name: "UNRELENTING",
+		description: "Claim the daily uplink 5 days in a row.",
+		reward: 150,
+	},
+	{
 		id: "operator-exam",
-		name: "🎓 OPERATOR EXAM",
+		name: "OPERATOR EXAM",
 		description: "Ace the exam about the person behind the cards.",
 		reward: 100,
 	},
@@ -157,6 +169,8 @@ export function evaluateAchievements(
 		pool.every((card) => state.owned[card.id]),
 	);
 	grant("dedicated", (context.streak ?? 0) >= 7);
+	grant("streak-3", (context.streak ?? 0) >= 3);
+	grant("streak-5", (context.streak ?? 0) >= 5);
 	grant("operator-exam", context.examPassed === true);
 
 	return unlocked;

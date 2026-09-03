@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { query, mutation, type MutationCtx, type QueryCtx } from "./_generated/server";
+import { query, mutation, internalMutation, type MutationCtx, type QueryCtx } from "./_generated/server";
 import { ALL_CARDS as SEED_ALL_CARDS } from "../src/data/cards";
 
 const cardValidator = v.object({
@@ -145,5 +145,36 @@ export const deleteCard = mutation({
 		if (!existing) throw new Error("NOT_FOUND");
 		await ctx.db.delete(existing._id);
 		return { deleted: args.id };
+	},
+});
+
+// One-shot sync of the card table from the seed data (title-case pass).
+// Internal so it can only be run from the CLI, never from the client.
+export const refreshFromSeed = internalMutation({
+	args: {},
+	handler: async (ctx) => {
+		const docs = await ctx.db.query("cards").collect();
+		let updated = 0;
+		for (const doc of docs) {
+			const seed = SEED_ALL_CARDS.find((card) => card.id === doc.cardId);
+			if (!seed) continue;
+			await ctx.db.replace(doc._id, {
+				cardId: doc.cardId,
+				name: seed.name,
+				type: seed.type,
+				rarity: seed.rarity,
+				weight: doc.weight,
+				active: doc.active,
+				tagline: seed.tagline,
+				description: seed.description,
+				details: seed.details ?? [],
+				tags: seed.tags,
+				links: seed.links ?? [],
+				note: seed.note,
+				createdAt: doc.createdAt ?? Date.now(),
+			});
+			updated += 1;
+		}
+		return { updated };
 	},
 });

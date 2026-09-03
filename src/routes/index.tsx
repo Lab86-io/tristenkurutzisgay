@@ -2,6 +2,7 @@ import { SignInButton } from "@clerk/tanstack-react-start";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Clicker } from "#/components/gacha/Clicker";
+import { FeaturedCarousel } from "#/components/gacha/FeaturedCarousel";
 import { GachaCardFace } from "#/components/gacha/GachaCard";
 import { PullReveal } from "#/components/gacha/PullReveal";
 import { RatesModal } from "#/components/gacha/RatesModal";
@@ -17,6 +18,9 @@ export const Route = createFileRoute("/")({ component: SummonPage });
 function SummonPage() {
 	const { status, state } = useGachaSession();
 	const { cards, byId } = useCards();
+	const featured = cards
+		.filter((card) => card.rarity === "UR" || card.rarity === "SSR")
+		.sort((a) => (a.rarity === "UR" ? -1 : 1));
 	const summon = useSummon();
 	const resetSave = useResetSave();
 	const [results, setResults] = useState<RevealCard[]>([]);
@@ -45,9 +49,6 @@ function SummonPage() {
 
 				{status === "signed-out" ? (
 					<div className="first-pull-callout">
-						<span className="first-pull-spark" aria-hidden="true">
-							⚡
-						</span>
 						Sign in to play — progress saves to your account.
 					</div>
 				) : state.characterAcquired ? (
@@ -66,10 +67,7 @@ function SummonPage() {
 					</Link>
 				) : (
 					<div className="first-pull-callout">
-						<span className="first-pull-spark" aria-hidden="true">
-							⚡
-						</span>
-						First summon is free — and it's always the UR operator card.
+						First summon is free — and it's always the operator card.
 					</div>
 				)}
 
@@ -82,7 +80,7 @@ function SummonPage() {
 					{status === "signed-out" ? (
 						<SignInButton mode="modal">
 							<button type="button" className="btn btn-neon btn-lg">
-								SIGN IN TO SUMMON
+								Sign in to summon
 							</button>
 						</SignInButton>
 					) : (
@@ -93,7 +91,7 @@ function SummonPage() {
 								disabled={state.characterAcquired && state.credits < PULL_COST}
 								onClick={() => doSummon(1)}
 							>
-								SUMMON ×1 — {state.characterAcquired ? `${PULL_COST}◈` : "FREE"}
+								Summon ×1 — {state.characterAcquired ? `${PULL_COST}◈` : "free"}
 							</button>
 							<button
 								type="button"
@@ -101,7 +99,7 @@ function SummonPage() {
 								disabled={state.credits < TEN_PULL_COST}
 								onClick={() => doSummon(10)}
 							>
-								SUMMON ×10 — {TEN_PULL_COST}◈
+								Summon ×10 — {TEN_PULL_COST}◈
 							</button>
 						</>
 					)}
@@ -110,9 +108,11 @@ function SummonPage() {
 						className="btn btn-ghost"
 						onClick={() => setRatesOpen(true)}
 					>
-						RATES
+						Rates
 					</button>
 				</div>
+
+				<FeaturedCarousel cards={featured} />
 
 				<dl className="summon-stats">
 					<div>
@@ -135,7 +135,7 @@ function SummonPage() {
 
 				<p className="summon-foot">
 					<Link to="/collection" className="neon-link">
-						VIEW INVENTORY ▸
+						View inventory ▸
 					</Link>
 					{status === "ready" && (
 						<>
@@ -151,7 +151,7 @@ function SummonPage() {
 									}
 								}}
 							>
-								WIPE SAVE
+								Wipe save
 							</button>
 						</>
 					)}

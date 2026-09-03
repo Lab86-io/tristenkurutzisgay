@@ -8,12 +8,12 @@ import { ACHIEVEMENTS } from "#/lib/achievements";
 
 export const Route = createFileRoute("/about")({
 	head: () => ({
-		meta: [{ title: "DOSSIER — TRISTEN KURUTZ" }],
+		meta: [{ title: "Dossier — Tristen Kurutz" }],
 	}),
 	component: DossierPage,
 });
 
-const AFFILIATIONS = [
+const Affiliations = [
 	{
 		name: "RIT Society of Software Engineers",
 		role: "President (Fall 2026) · Secretary (Spring 2026) · Treasurer (Spring 2025) · Mentor (Fall 2024)",
@@ -32,12 +32,12 @@ function DossierPage() {
 	const characterCard = byId.get("tk-character") ?? CHARACTER_CARD;
 	return (
 		<div className="dossier-page">
-			<h1 className="page-title font-myfont">DOSSIER</h1>
+			<h1 className="page-title font-myfont">Dossier</h1>
 			<p className="section-sub">The person behind the cards.</p>
 
 			<div className="dossier-grid">
 				<section className="panel">
-					<h2 className="panel-title">WHO AM I?</h2>
+					<h2 className="panel-title">Who am I?</h2>
 					<p className="panel-body">
 						I'm Tristen, a software engineering student at RIT graduating Dec
 						2026. I most recently spent a summer at M&amp;T Bank building a Java
@@ -58,12 +58,12 @@ function DossierPage() {
 				</section>
 
 				<section className="panel">
-					<h2 className="panel-title">OPERATOR STATS</h2>
+					<h2 className="panel-title">Operator stats</h2>
 					<StatBars stats={characterCard.stats ?? []} />
 				</section>
 
 				<section className="panel">
-					<h2 className="panel-title">EDUCATION</h2>
+					<h2 className="panel-title">Education</h2>
 					<p className="panel-body">
 						<strong className="lit">Rochester Institute of Technology</strong>
 						<br />
@@ -73,9 +73,9 @@ function DossierPage() {
 				</section>
 
 				<section className="panel">
-					<h2 className="panel-title">AFFILIATIONS</h2>
+					<h2 className="panel-title">Affiliations</h2>
 					<ul className="affiliation-list">
-						{AFFILIATIONS.map((affiliation) => (
+						{Affiliations.map((affiliation) => (
 							<li key={affiliation.name} className="affiliation">
 								<div className="affiliation-head">
 									<span className="lit">{affiliation.name}</span>
@@ -91,7 +91,7 @@ function DossierPage() {
 			</div>
 
 			<section className="panel dossier-trophies">
-				<h2 className="panel-title">COMMENDATIONS</h2>{" "}
+				<h2 className="panel-title">Commendations</h2>{" "}
 				<ul className="trophy-list">
 					{ACHIEVEMENTS.map((achievement) => {
 						const unlockedAt = state.achievements[achievement.id];
@@ -119,7 +119,7 @@ function DossierPage() {
 			<p className="dossier-foot">
 				Want the human-readable version?{" "}
 				<Link to="/comms" className="neon-link">
-					OPEN COMMS ▸
+					Open comms ▸
 				</Link>
 			</p>
 		</div>

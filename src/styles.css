@@ -1,3 +1,4 @@
+@import "@fontsource-variable/inter";
 @import "tailwindcss";
 
 @font-face {
@@ -62,7 +63,7 @@ html {
 
 body {
   margin: 0;
-  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-family: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   background-color: var(--bg);
   background-image:
     linear-gradient(rgba(41, 230, 255, 0.035) 1px, transparent 1px),
@@ -316,7 +317,6 @@ body {
   font-family: var(--mono);
   font-size: 0.8rem;
   letter-spacing: 0.12em;
-  text-transform: uppercase;
   text-decoration: none;
   text-align: center;
   padding: 0.6rem 1.3rem;
@@ -1768,6 +1768,9 @@ body {
   .pull-grid .gcard[data-rarity="UR"],
   .gcard-back[data-tell="SSR"],
   .gcard-back[data-tell="UR"],
+  .gcard-art-scan,
+  .orb,
+  .type-marker,
   .toast,
   .stipend-btn,
   .first-pull-callout,
@@ -2130,34 +2133,46 @@ html.gold-mode body {
   }
 }
 
-/* animated type icons (emoji) */
+/* card type marker — animated CSS shape, no emoji */
 .type-row {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   font-family: var(--mono);
   font-size: 0.6rem;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   color: var(--dim);
-  text-transform: uppercase;
 }
 
-.type-icon {
-  display: inline-block;
-  animation: icon-float 2.6s ease-in-out infinite;
+.type-marker {
+  width: 7px;
+  height: 7px;
+  transform: rotate(45deg);
+  animation: marker-spin 3.2s linear infinite;
 }
 
-.type-row:nth-child(2) .type-icon {
-  animation-delay: 0.7s;
+.type-marker-role {
+  background: var(--cyan);
 }
 
-@keyframes icon-float {
-  0%,
-  100% {
-    transform: translateY(0);
+.type-marker-project {
+  background: var(--magenta);
+}
+
+.type-marker-skill {
+  background: var(--gold);
+}
+
+.type-marker-character {
+  background: var(--green);
+}
+
+@keyframes marker-spin {
+  from {
+    transform: rotate(45deg);
   }
-  50% {
-    transform: translateY(-2px);
+  to {
+    transform: rotate(405deg);
   }
 }
 
@@ -2285,4 +2300,173 @@ html.gold-mode body {
   line-height: 1.55;
   color: var(--text);
   white-space: pre-wrap;
+}
+
+/* ---------- card art zone ---------- */
+
+.gcard-art {
+  position: relative;
+  height: 34%;
+  margin: 0.5rem 0;
+  border: 1px solid color-mix(in srgb, var(--rc, var(--line)) 35%, transparent);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 70% 20%, color-mix(in srgb, var(--rc, var(--cyan)) 16%, transparent), transparent 55%),
+    linear-gradient(160deg, var(--panel-2), var(--panel));
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gcard-art-mono {
+  font-family: 'GT Walsheim Pro Black', sans-serif;
+  font-size: 2.2rem;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--rc, #fff) 75%, white 25%);
+  text-shadow: 0 0 18px color-mix(in srgb, var(--rc, var(--cyan)) 55%, transparent);
+}
+
+.gcard-art-scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    color-mix(in srgb, var(--rc, var(--cyan)) 18%, transparent) 50%,
+    transparent 80%
+  );
+  transform: translateX(-100%);
+  animation: art-scan 3.4s ease-in-out infinite;
+}
+
+@keyframes art-scan {
+  60%,
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.gcard-locked .gcard-art {
+  border-style: dashed;
+  border-color: var(--line);
+}
+
+.gcard-locked .gcard-art-mono {
+  color: rgba(255, 255, 255, 0.15);
+  text-shadow: none;
+}
+
+/* ---------- featured carousel ---------- */
+
+.featured {
+  max-width: 44rem;
+  margin: 0 auto 2.5rem;
+}
+
+.featured-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.9rem;
+}
+
+.featured-head .panel-title {
+  margin-bottom: 0;
+}
+
+.featured-dots {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.featured-dot {
+  cursor: pointer;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  border: 1px solid var(--cyan);
+  background-color: transparent;
+  padding: 0;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.featured-dot-on {
+  background-color: var(--cyan);
+  transform: scale(1.2);
+}
+
+.featured-viewport {
+  overflow: hidden;
+}
+
+.featured-track {
+  display: flex;
+  gap: 1rem;
+}
+
+.featured-slide {
+  flex: 0 0 46%;
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .featured-slide {
+    flex: 0 0 70%;
+  }
+}
+
+.featured-link {
+  display: block;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+
+.featured-link:hover {
+  transform: translateY(-3px);
+}
+
+.featured-arrows {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+.featured-arrow {
+  cursor: pointer;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background-color: transparent;
+  color: var(--cyan);
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: border-color 0.2s, transform 0.15s;
+}
+
+.featured-arrow:hover {
+  border-color: var(--cyan);
+  transform: scale(1.08);
+}
+
+/* ---------- miner combo ---------- */
+
+.mine-btn-hot {
+  border-color: var(--magenta);
+  box-shadow: 0 0 24px rgba(255, 61, 240, 0.4);
+}
+
+.mine-combo {
+  position: absolute;
+  left: 0.85rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--magenta);
+  text-shadow: 0 0 10px rgba(255, 61, 240, 0.6);
+}
+
+.mine-float-combo {
+  color: var(--magenta);
 }

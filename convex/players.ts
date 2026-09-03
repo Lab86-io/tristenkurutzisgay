@@ -241,7 +241,9 @@ export const summon = mutation({
 			totalPulls += 1;
 
 			const isDupe = Boolean(existing);
-			const refund = isDupe ? DUPE_REFUNDS[card.rarity] : 0;
+			let refund = isDupe ? DUPE_REFUNDS[card.rarity] : 0;
+			// 5% dupe jackpot: refund pays out 10x
+			if (isDupe && Math.random() < 0.05) refund *= 10;
 			credits += refund;
 			owned[card.id] = {
 				count: (existing?.count ?? 0) + 1,

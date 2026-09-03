@@ -14,7 +14,7 @@ export function RatesModal({
 	const { cards } = useCards();
 	return (
 		<Modal open={open} onClose={onClose} label="Summon rates">
-			<h3 className="modal-title">SUMMON RATES</h3>
+			<h3 className="modal-title">Summon rates</h3>
 			<p className="modal-sub">
 				Every {PITY_SR} pulls guarantee SR or better. Pity for UR at {PITY_UR}{" "}
 				pulls. Dupes refund credits automatically.
@@ -22,10 +22,10 @@ export function RatesModal({
 			<table className="rates-table">
 				<thead>
 					<tr>
-						<th scope="col">RARITY</th>
-						<th scope="col">RATE</th>
-						<th scope="col">CARDS</th>
-						<th scope="col">DUPE REFUND</th>
+						<th scope="col">Rarity</th>
+						<th scope="col">Rate</th>
+						<th scope="col">Cards</th>
+						<th scope="col">Dupe refund</th>
 					</tr>
 				</thead>
 				<tbody>

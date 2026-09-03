@@ -7,7 +7,7 @@ import { CONTACT_REWARD } from "#/lib/gacha";
 
 export const Route = createFileRoute("/comms")({
 	head: () => ({
-		meta: [{ title: "COMMS — TRISTEN KURUTZ" }],
+		meta: [{ title: "Comms — Tristen Kurutz" }],
 	}),
 	component: CommsPage,
 });
@@ -27,7 +27,7 @@ interface Channel {
 const CHANNELS: Channel[] = [
 	{
 		id: "email",
-		label: "EMAIL",
+		label: "Email",
 		value: EMAIL,
 		href: `mailto:${EMAIL}`,
 		external: false,
@@ -35,7 +35,7 @@ const CHANNELS: Channel[] = [
 	},
 	{
 		id: "linkedin",
-		label: "LINKEDIN",
+		label: "LinkedIn",
 		value: "tristen-kurutz",
 		href: "https://www.linkedin.com/in/tristen-kurutz",
 		external: true,
@@ -43,7 +43,7 @@ const CHANNELS: Channel[] = [
 	},
 	{
 		id: "github",
-		label: "GITHUB",
+		label: "GitHub",
 		value: "tristenkurutz",
 		href: "https://github.com/tristenkurutz",
 		external: true,
@@ -89,21 +89,21 @@ function CommsPage() {
 
 	return (
 		<div className="comms-page">
-			<h1 className="page-title font-myfont">COMMS</h1>
+			<h1 className="page-title font-myfont">Comms</h1>
 			<p className="section-sub">
 				Contact channels are earned here — decrypt records to open them.
 			</p>
 
 			<div className="status-banner">
 				<span className="status-dot" aria-hidden="true" />
-				STATUS: OPEN TO FULL-TIME ROLES — GRADUATING DEC 2026
+				Open to full-time roles — graduating Dec 2026
 			</div>
 
 			{status === "ready" ? (
 				<section className="panel transmit-panel">
 					<h2 className="panel-title">
 						{state.contactRewarded
-							? "SEND A TRANSMISSION"
+							? "Send a transmission"
 							: `FIRST TRANSMISSION — +${CONTACT_REWARD}◈`}
 					</h2>
 					<p className="transmit-sub">
@@ -172,8 +172,8 @@ function CommsPage() {
 							}
 						>
 							{sending
-								? "TRANSMITTING…"
-								: `TRANSMIT${state.contactRewarded ? "" : ` — +${CONTACT_REWARD}◈`}`}
+								? "Transmitting…"
+								: `Transmit${state.contactRewarded ? "" : ` — +${CONTACT_REWARD}◈`}`}
 						</button>
 					</form>
 				</section>

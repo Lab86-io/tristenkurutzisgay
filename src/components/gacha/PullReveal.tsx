@@ -94,12 +94,12 @@ export function PullReveal({
 				<div className="pull-header">
 					<h2 className="pull-title">
 						{done
-							? "SUMMON COMPLETE"
-							: `DECRYPTING ${revealed + 1}/${results.length}`}
+							? "Summon complete"
+							: `Decrypting ${revealed + 1}/${results.length}`}
 					</h2>
 					{!done && (
 						<button type="button" className="btn btn-ghost" onClick={skip}>
-							SKIP ▸▸
+							Skip ▸▸
 						</button>
 					)}
 				</div>
@@ -142,7 +142,7 @@ export function PullReveal({
 							disabled={credits < TEN_PULL_COST}
 							onClick={() => onSummonAgain(10)}
 						>
-							SUMMON ×10 — {TEN_PULL_COST}◈
+							Summon ×10 — {TEN_PULL_COST}◈
 						</button>
 						<button
 							type="button"
@@ -150,13 +150,13 @@ export function PullReveal({
 							disabled={credits < PULL_COST}
 							onClick={() => onSummonAgain(1)}
 						>
-							SUMMON ×1 — {PULL_COST}◈
+							Summon ×1 — {PULL_COST}◈
 						</button>
 						<Link to="/collection" className="btn btn-ghost" onClick={onClose}>
-							INVENTORY ▸
+							Inventory ▸
 						</Link>
 						<button type="button" className="btn btn-ghost" onClick={onClose}>
-							CLOSE
+							Close
 						</button>
 					</div>
 				)}
