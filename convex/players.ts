@@ -124,7 +124,27 @@ function rollCard(
 		const fallback = anyPool[anyPool.length - 1] ?? [];
 		return fallback[fallback.length - 1];
 	}
-	// new-card protection: only allow dupes once every card in the tier is owned
+	// new-card protection: if the rolled tier is fully owned, deal from the
+	// nearest tier that still has new cards — duplicates only appear once the
+	// entire inventory is complete
+	const tierOrder: Rarity[] = ["UR", "SSR", "SR", "R", "C"];
+	const tierIndex = tierOrder.indexOf(rarity);
+	const exhausted = pool.every((card) => owned[card.id]);
+	if (exhausted) {
+		const target = [...tierOrder]
+			.filter((r) => r !== rarity)
+			.sort(
+				(a, b) =>
+					Math.abs(tierOrder.indexOf(a) - tierIndex) -
+					Math.abs(tierOrder.indexOf(b) - tierIndex),
+			)
+			.find((r) => poolsByRarity[r].some((card) => !owned[card.id]));
+		if (target) {
+			pool = poolsByRarity[target];
+			rarity = target;
+		}
+		// whole inventory owned → duplicates are the endgame income
+	}
 	const unowned = pool.filter((card) => !owned[card.id]);
 	if (unowned.length > 0) pool = unowned;
 	const total = pool.reduce((sum, card) => sum + card.weight, 0);
