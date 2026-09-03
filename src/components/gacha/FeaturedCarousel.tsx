@@ -38,6 +38,7 @@ export function FeaturedCarousel({
 				<div className="featured-dots">
 					{snaps.map((_, index) => (
 						<button
+							// biome-ignore lint/suspicious/noArrayIndexKey: static dot set, never reordered
 							key={index}
 							type="button"
 							aria-label={`Go to slide ${index + 1}`}
