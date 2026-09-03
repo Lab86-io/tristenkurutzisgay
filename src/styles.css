@@ -490,8 +490,8 @@ body {
     var(--panel);
   border: 1px solid var(--rc);
   box-shadow:
-    inset 0 0 24px rgba(0, 0, 0, 0.55),
-    0 0 14px color-mix(in srgb, var(--rc) 35%, transparent);
+    inset 0 0 20px rgba(0, 0, 0, 0.45),
+    0 0 10px color-mix(in srgb, var(--rc) 22%, transparent);
   overflow: hidden;
 }
 
@@ -547,6 +547,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  white-space: nowrap;
 }
 
 .gcard-bottom {
@@ -573,30 +574,24 @@ body {
 }
 
 .gcard-body {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 0.4rem;
-  min-height: 0;
+  gap: 0.15rem;
+  min-height: 2.6rem;
+  margin-top: 0.55rem;
 }
 
 .gcard-name {
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.15;
+  font-size: 0.95rem;
+  line-height: 1.2;
   color: #fff;
-  text-shadow: 0 0 12px color-mix(in srgb, var(--rc) 55%, transparent);
+  text-shadow: 0 0 12px color-mix(in srgb, var(--rc) 45%, transparent);
   overflow-wrap: anywhere;
-}
-
-.gcard-tagline {
-  margin: 0;
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.1em;
-  color: var(--rc);
-  opacity: 0.85;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .gcard-tags {
@@ -2316,7 +2311,7 @@ html.gold-mode body {
 
 .gcard-art {
   position: relative;
-  height: 34%;
+  height: 36%;
   margin: 0.5rem 0;
   border: 1px solid color-mix(in srgb, var(--rc, var(--line)) 35%, transparent);
   border-radius: 8px;
@@ -2331,10 +2326,24 @@ html.gold-mode body {
 
 .gcard-art-mono {
   font-family: 'GT Walsheim Pro Black', sans-serif;
-  font-size: 2.2rem;
+  font-size: 2rem;
   letter-spacing: 0.04em;
-  color: color-mix(in srgb, var(--rc, #fff) 75%, white 25%);
-  text-shadow: 0 0 18px color-mix(in srgb, var(--rc, var(--cyan)) 55%, transparent);
+  color: color-mix(in srgb, var(--rc, #fff) 60%, white 40%);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--rc, var(--cyan)) 40%, transparent);
+}
+
+.gcard-art-tag {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 5px;
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.06em;
+  color: var(--dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .gcard-art-scan {
@@ -2744,4 +2753,31 @@ html.gold-mode body {
   color: var(--green);
   border-color: rgba(74, 222, 128, 0.5);
   opacity: 0.6;
+}
+
+
+/* ---------- card dupe badge ---------- */
+
+.gcard {
+  --pad: 0.75rem;
+}
+
+.gcard-dupe {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  z-index: 3;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #001318;
+  background-color: var(--gold);
+  border-radius: 999px;
+  padding: 0.14rem 0.42rem;
+  box-shadow: 0 0 10px rgba(255, 207, 63, 0.5);
+}
+
+.gcard-top {
+  position: relative;
+  z-index: 1;
 }

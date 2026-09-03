@@ -1,9 +1,4 @@
-import {
-	type GachaCard,
-	RARITY_LEVEL,
-	RARITY_META,
-	type Rarity,
-} from "#/data/cards";
+import { RARITY_LEVEL, RARITY_META, type GachaCard, type Rarity } from "#/data/cards";
 
 const TYPE_LABEL: Record<GachaCard["type"], string> = {
 	CHARACTER: "Operator",
@@ -20,9 +15,11 @@ const TYPE_LABEL: Record<GachaCard["type"], string> = {
 export function RarityOrbs({
 	rarity,
 	size = 8,
+	showLabel = false,
 }: {
 	rarity: Rarity;
 	size?: number;
+	showLabel?: boolean;
 }) {
 	const level = RARITY_LEVEL[rarity];
 	return (
@@ -39,7 +36,9 @@ export function RarityOrbs({
 					}}
 				/>
 			))}
-			<span className="orb-label">{RARITY_META[rarity].label}</span>
+			{showLabel && (
+				<span className="orb-label">{RARITY_META[rarity].label}</span>
+			)}
 		</span>
 	);
 }
@@ -47,20 +46,14 @@ export function RarityOrbs({
 export function TypeMarker({ type }: { type: GachaCard["type"] }) {
 	return (
 		<span className="type-row">
-			<span
-				className={`type-marker type-marker-${type.toLowerCase()}`}
-				aria-hidden="true"
-			/>
+			<span className={`type-marker type-marker-${type.toLowerCase()}`} aria-hidden="true" />
 			{TYPE_LABEL[type]}
 		</span>
 	);
 }
 
 function monogram(name: string): string {
-	const words = name
-		.replace(/[^\w&.+\s-]/g, " ")
-		.split(/\s+/)
-		.filter(Boolean);
+	const words = name.replace(/[^\w&.+\s-]/g, " ").split(/\s+/).filter(Boolean);
 	if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
 	return words
 		.slice(0, 2)
@@ -79,14 +72,16 @@ export function GachaCardFace({
 	count?: number;
 }) {
 	const locked = state === "locked";
+	const tagCount = card.tags.length;
 	return (
 		<div
 			className={`gcard gcard-${state}`}
 			data-rarity={card.rarity}
 			data-type={card.type}
 		>
-			{card.rarity === "UR" && (
-				<span className="gcard-beam" aria-hidden="true" />
+			{card.rarity === "UR" && <span className="gcard-beam" aria-hidden="true" />}
+			{count !== undefined && count > 1 && (
+				<span className="gcard-dupe">{count}×</span>
 			)}
 			<div className="gcard-top">
 				{locked ? (
@@ -94,40 +89,30 @@ export function GachaCardFace({
 						<span className="orb" style={{ width: 8, height: 8 }} />
 					</span>
 				) : (
-					<RarityOrbs rarity={card.rarity} size={8} />
+					<RarityOrbs rarity={card.rarity} />
 				)}
 				<TypeMarker type={card.type} />
 			</div>
 			<div className="gcard-art" aria-hidden="true">
 				<span className="gcard-art-scan" />
-				<span className="gcard-art-mono">
-					{locked ? "?" : monogram(card.name)}
-				</span>
+				<span className="gcard-art-mono">{locked ? "?" : monogram(card.name)}</span>
+				{!locked && <span className="gcard-art-tag">{card.tagline}</span>}
 			</div>
 			<div className="gcard-body">
 				{locked ? (
-					<span className="gcard-unknown" aria-hidden="true">
-						?
-					</span>
+					<span className="gcard-locked-label">Encrypted</span>
 				) : (
-					<>
-						<h3 className="gcard-name">{card.name}</h3>
-						<p className="gcard-tagline">{card.tagline}</p>
-					</>
+					<h3 className="gcard-name">{card.name}</h3>
 				)}
 			</div>
 			<div className="gcard-bottom">
 				{locked ? (
-					<span className="gcard-locked-label">Encrypted</span>
+					<span className="gcard-locked-label">Decrypt to reveal</span>
 				) : (
-					<>
-						<span className="gcard-tags">
-							{card.tags.slice(0, 3).join(" · ")}
-						</span>
-						{count !== undefined && count > 1 && (
-							<span className="gcard-count">×{count}</span>
-						)}
-					</>
+					<span className="gcard-tags">
+						{card.tags.slice(0, 2).join(" · ")}
+						{tagCount > 2 && ` +${tagCount - 2}`}
+					</span>
 				)}
 			</div>
 		</div>
