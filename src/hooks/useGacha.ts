@@ -178,3 +178,66 @@ export function useSubmitExam(): (
 		}
 	};
 }
+
+export function useDailyState() {
+	const { isLoaded, isSignedIn } = useAuth();
+	return useQuery(
+		api.players.getDailyState,
+		isLoaded && isSignedIn ? {} : "skip",
+	);
+}
+
+export function useSolveCipher(): (
+	answer: string,
+) => Promise<{ solved: boolean; reason?: string }> {
+	const solveMutation = useMutation(api.players.solveCipher);
+	return async (answer) => {
+		try {
+			const response = await solveMutation({ answer });
+			return { solved: response.solved, reason: response.reason };
+		} catch {
+			return { solved: false, reason: "error" };
+		}
+	};
+}
+
+export function useClaimRecall(): (moves: number) => Promise<boolean> {
+	const recallMutation = useMutation(api.players.claimRecall);
+	return async (moves) => {
+		try {
+			const response = await recallMutation({ moves });
+			if (response.claimed) {
+				pushToast(
+					"RECALL COMPLETE",
+					`Memory intact — +${response.reward}◈`,
+					"gold",
+				);
+				sfx.unlock();
+				return true;
+			}
+			return false;
+		} catch {
+			pushToast("RECALL FAILED", "Try again tomorrow.", "magenta");
+			return false;
+		}
+	};
+}
+
+export function useClaimScan(): (page: string) => Promise<number> {
+	const scanMutation = useMutation(api.players.claimScan);
+	return async (page) => {
+		try {
+			const response = await scanMutation({ page });
+			if (response.granted > 0) {
+				pushToast(
+					"SCANNER",
+					`+${response.granted}◈ — ${response.scanned}/3 pages explored today`,
+					"cyan",
+				);
+			}
+			return response.granted;
+		} catch {
+			return 0;
+		}
+	};
+}

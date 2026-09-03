@@ -10,6 +10,7 @@
 
 import type * as achievements from "../achievements.js";
 import type * as cards from "../cards.js";
+import type * as daily from "../daily.js";
 import type * as emails from "../emails.js";
 import type * as players from "../players.js";
 
@@ -22,6 +23,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   achievements: typeof achievements;
   cards: typeof cards;
+  daily: typeof daily;
   emails: typeof emails;
   players: typeof players;
 }>;

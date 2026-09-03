@@ -1,8 +1,9 @@
 import { SignInButton } from "@clerk/tanstack-react-start";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { CardFan } from "#/components/gacha/CardFan";
 import { Clicker } from "#/components/gacha/Clicker";
-import { FeaturedCarousel } from "#/components/gacha/FeaturedCarousel";
+import { DailyOps } from "#/components/gacha/DailyOps";
 import { GachaCardFace } from "#/components/gacha/GachaCard";
 import { PullReveal } from "#/components/gacha/PullReveal";
 import { RatesModal } from "#/components/gacha/RatesModal";
@@ -112,7 +113,9 @@ function SummonPage() {
 					</button>
 				</div>
 
-				<FeaturedCarousel cards={featured} />
+				<CardFan cards={featured} />
+
+				<DailyOps />
 
 				<dl className="summon-stats">
 					<div>

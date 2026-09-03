@@ -2537,3 +2537,202 @@ html.gold-mode body {
 .mine-float-combo {
   color: var(--magenta);
 }
+
+/* ---------- card fan (hover-sweep carousel) ---------- */
+
+.fan-wrap {
+  max-width: 52rem;
+  margin: 0 auto 2.5rem;
+}
+
+.fan {
+  position: relative;
+  height: calc(min(19rem, 74vw) * 1.45);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.fan-card {
+  position: absolute;
+  width: min(19rem, 74vw);
+  top: 0;
+  left: 50%;
+  margin-left: calc(min(19rem, 74vw) / -2);
+  transition:
+    transform 0.45s cubic-bezier(0.2, 0.8, 0.3, 1),
+    filter 0.45s,
+    opacity 0.3s;
+}
+
+.fan-card-front {
+  filter: drop-shadow(0 0 26px rgba(41, 230, 255, 0.35)) !important;
+}
+
+.fan-link {
+  display: block;
+  text-decoration: none;
+}
+
+.fan-hint {
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  margin-top: 0.9rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fan-card {
+    transition: none;
+  }
+}
+
+/* ---------- daily ops ---------- */
+
+.daily-ops {
+  max-width: 34rem;
+  margin: 0 auto 2.5rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background-color: var(--panel);
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+}
+
+.daily-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.daily-note {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+}
+
+.daily-op {
+  border-top: 1px solid var(--line);
+  padding: 0.95rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.daily-op[data-done="true"] {
+  opacity: 0.55;
+}
+
+.daily-op-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.daily-op-name {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: #fff;
+}
+
+.daily-op-reward {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--gold);
+}
+
+.daily-hint {
+  font-size: 0.78rem;
+  color: var(--dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.daily-done {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--green);
+  margin: 0;
+}
+
+.cipher-text {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.35em;
+  color: var(--cyan);
+  text-shadow: 0 0 12px rgba(41, 230, 255, 0.5);
+}
+
+.daily-cipher-form {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.daily-cipher-form .transmit-input {
+  flex: 1;
+}
+
+.scan-pips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.scan-pip {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+  border: 1px dashed var(--line);
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+}
+
+.scan-pip-on {
+  color: var(--green);
+  border-style: solid;
+  border-color: rgba(74, 222, 128, 0.45);
+}
+
+/* ---------- recall game ---------- */
+
+.recall-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+.recall-tile {
+  cursor: pointer;
+  aspect-ratio: 3 / 4;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(160deg, var(--panel-2), var(--panel)),
+    var(--panel);
+  color: transparent;
+  font-family: 'GT Walsheim Pro Black', sans-serif;
+  font-size: 1.1rem;
+  transition: transform 0.15s, border-color 0.2s;
+}
+
+.recall-tile:hover:not(:disabled) {
+  border-color: var(--cyan);
+  transform: translateY(-2px);
+}
+
+.recall-tile-up {
+  color: var(--cyan);
+  border-color: var(--cyan);
+  text-shadow: 0 0 10px rgba(41, 230, 255, 0.5);
+}
+
+.recall-tile-matched {
+  color: var(--green);
+  border-color: rgba(74, 222, 128, 0.5);
+  opacity: 0.6;
+}

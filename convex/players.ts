@@ -1,7 +1,12 @@
 import { ALL_CARDS, CARD_POOL, RARITY_META, RARITY_ORDER, type Rarity } from "../src/data/cards";
+import { todayPuzzle, caesar } from "./daily";
 import {
+	CIPHER_REWARD,
 	CONTACT_REWARD,
 	MINE_DAILY_CAP,
+	RECALL_REWARD,
+	SCAN_MAX,
+	SCAN_REWARD,
 	PITY_SR,
 	PITY_UR,
 	PULL_COST,
@@ -31,6 +36,10 @@ interface PlayerState {
 	achievements: Record<string, number>;
 	minedToday: number;
 	contactRewarded: boolean;
+	dailyDate: string | null;
+	dailyCipher: boolean;
+	dailyRecall: boolean;
+	dailyScanned: string[];
 }
 
 function publicState(player: PlayerDoc): PlayerState {
@@ -46,6 +55,10 @@ function publicState(player: PlayerDoc): PlayerState {
 		achievements: player.achievements,
 		minedToday: player.minedDate === new Date().toISOString().slice(0, 10) ? (player.minedToday ?? 0) : 0,
 		contactRewarded: player.contactRewarded ?? false,
+		dailyDate: player.dailyDate ?? null,
+		dailyCipher: player.dailyCipher ?? false,
+		dailyRecall: player.dailyRecall ?? false,
+		dailyScanned: player.dailyDate === new Date().toISOString().slice(0, 10) ? (player.dailyScanned ?? []) : [],
 	};
 }
 
@@ -358,6 +371,10 @@ export const resetSave = mutation({
 			minedToday: 0,
 			minedDate: undefined,
 			contactRewarded: false,
+			dailyDate: undefined,
+			dailyCipher: false,
+			dailyRecall: false,
+			dailyScanned: [],
 			createdAt: player.createdAt,
 			updatedAt: now,
 		});
@@ -481,5 +498,116 @@ export const submitExam = mutation({
 		};
 		await ctx.db.replace(player._id, updated);
 		return { passed: true as const, unlocked, state: publicState(updated) };
+	},
+});
+
+// ---------- daily ops: cipher, recall, scanner ----------
+
+function dailyFlags(player: PlayerDoc) {
+	const today = new Date().toISOString().slice(0, 10);
+	const fresh = player.dailyDate === today;
+	return {
+		today,
+		cipher: fresh ? (player.dailyCipher ?? false) : false,
+		recall: fresh ? (player.dailyRecall ?? false) : false,
+		scanned: fresh ? (player.dailyScanned ?? []) : [],
+	};
+}
+
+export const getDailyState = query({
+	args: {},
+	handler: async (ctx) => {
+		const player = await getPlayer(ctx);
+		const puzzle = todayPuzzle();
+		const cipherText = caesar(puzzle.answer, 3);
+		if (!player) {
+			return { signedIn: false as const, cipherDone: false, recallDone: false, scanned: [], cipherText, hint: puzzle.hint };
+		}
+		const flags = dailyFlags(player);
+		return {
+			signedIn: true as const,
+			cipherDone: flags.cipher,
+			recallDone: flags.recall,
+			scanned: flags.scanned,
+			cipherText,
+			hint: puzzle.hint,
+		};
+	},
+});
+
+export const solveCipher = mutation({
+	args: { answer: v.string() },
+	handler: async (ctx, args) => {
+		const player = await ensurePlayer(ctx);
+		const flags = dailyFlags(player);
+		if (flags.cipher) {
+			return { solved: false as const, reason: "already_today" as const, state: publicState(player) };
+		}
+		const puzzle = todayPuzzle();
+		if (args.answer.trim().toUpperCase() !== puzzle.answer) {
+			return { solved: false as const, reason: "wrong" as const, state: publicState(player) };
+		}
+		const updated: PlayerDoc = {
+			...player,
+			credits: player.credits + CIPHER_REWARD,
+			dailyDate: flags.today,
+			dailyCipher: true,
+			dailyScanned: flags.scanned,
+			updatedAt: Date.now(),
+		};
+		await ctx.db.replace(player._id, updated);
+		return { solved: true as const, reward: CIPHER_REWARD, state: publicState(updated) };
+	},
+});
+
+export const claimRecall = mutation({
+	args: { moves: v.number() },
+	handler: async (ctx, args) => {
+		const player = await ensurePlayer(ctx);
+		const flags = dailyFlags(player);
+		if (flags.recall) {
+			return { claimed: false as const, reason: "already_today" as const, state: publicState(player) };
+		}
+		if (!Number.isInteger(args.moves) || args.moves < 6 || args.moves > 30) {
+			throw new Error("INVALID_MOVES");
+		}
+		const updated: PlayerDoc = {
+			...player,
+			credits: player.credits + RECALL_REWARD,
+			dailyDate: flags.today,
+			dailyRecall: true,
+			dailyScanned: flags.scanned,
+			updatedAt: Date.now(),
+		};
+		await ctx.db.replace(player._id, updated);
+		return { claimed: true as const, reward: RECALL_REWARD, state: publicState(updated) };
+	},
+});
+
+export const claimScan = mutation({
+	args: { page: v.string() },
+	handler: async (ctx, args) => {
+		const player = await ensurePlayer(ctx);
+		const flags = dailyFlags(player);
+		const page = args.page.trim().slice(0, 40);
+		const allowed = ["/", "/collection", "/about", "/comms"];
+		if (!allowed.includes(page)) {
+			return { granted: 0, state: publicState(player) };
+		}
+		if (flags.scanned.includes(page) || flags.scanned.length >= SCAN_MAX) {
+			return { granted: 0, state: publicState(player) };
+		}
+		const scanned = [...flags.scanned, page];
+		const updated: PlayerDoc = {
+			...player,
+			credits: player.credits + SCAN_REWARD,
+			dailyDate: flags.today,
+			dailyCipher: flags.cipher,
+			dailyRecall: flags.recall,
+			dailyScanned: scanned,
+			updatedAt: Date.now(),
+		};
+		await ctx.db.replace(player._id, updated);
+		return { granted: SCAN_REWARD, scanned: scanned.length, state: publicState(updated) };
 	},
 });
