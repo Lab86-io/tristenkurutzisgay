@@ -43,11 +43,11 @@ export const RARITY_META: Record<
 	Rarity,
 	{ label: string; rate: number; dupeRefund: number }
 > = {
-	UR: { label: "Ultra rare", rate: 0.01, dupeRefund: 500 },
-	SSR: { label: "S-special rare", rate: 0.05, dupeRefund: 200 },
-	SR: { label: "Super rare", rate: 0.14, dupeRefund: 80 },
+	UR: { label: "Ultra rare", rate: 0.02, dupeRefund: 500 },
+	SSR: { label: "S-special rare", rate: 0.08, dupeRefund: 200 },
+	SR: { label: "Super rare", rate: 0.2, dupeRefund: 80 },
 	R: { label: "RARE", rate: 0.3, dupeRefund: 40 },
-	C: { label: "Common", rate: 0.5, dupeRefund: 20 },
+	C: { label: "Common", rate: 0.4, dupeRefund: 20 },
 };
 
 export const CHARACTER_CARD: GachaCard = {

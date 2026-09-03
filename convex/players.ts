@@ -104,6 +104,7 @@ function rollCard(
 	poolsByRarity: Record<Rarity, PoolCard[]>,
 	pitySr: number,
 	pityUr: number,
+	owned: Record<string, unknown>,
 ): PoolCard {
 	let rarity: Rarity;
 	if (pityUr >= PITY_UR - 1) {
@@ -116,13 +117,16 @@ function rollCard(
 			rarity = "SR";
 		}
 	}
-	const pool = poolsByRarity[rarity];
+	let pool = poolsByRarity[rarity];
 	if (pool.length === 0) {
 		// rarity tier has no active cards — degrade to whatever exists
 		const anyPool = Object.values(poolsByRarity).filter((p) => p.length > 0);
 		const fallback = anyPool[anyPool.length - 1] ?? [];
 		return fallback[fallback.length - 1];
 	}
+	// new-card protection: only allow dupes once every card in the tier is owned
+	const unowned = pool.filter((card) => !owned[card.id]);
+	if (unowned.length > 0) pool = unowned;
 	const total = pool.reduce((sum, card) => sum + card.weight, 0);
 	let roll = Math.random() * total;
 	for (const card of pool) {
@@ -231,7 +235,7 @@ export const summon = mutation({
 		};
 
 		for (let i = 0; i < args.count; i += 1) {
-			const card = rollCard(poolsByRarity, pitySr, pityUr);
+			const card = rollCard(poolsByRarity, pitySr, pityUr, owned);
 			const existing = owned[card.id];
 
 			if (card.rarity === "UR") {
