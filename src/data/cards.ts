@@ -239,7 +239,7 @@ export const CARD_POOL: GachaCard[] = [
 		id: "skill-ts",
 		name: "TypeScript",
 		type: "SKILL",
-		rarity: "SR",
+		rarity: "R",
 		weight: 1,
 		tagline: "Language",
 		description:
@@ -261,7 +261,7 @@ export const CARD_POOL: GachaCard[] = [
 		id: "skill-csharp",
 		name: "C#",
 		type: "SKILL",
-		rarity: "SR",
+		rarity: "R",
 		weight: 1,
 		tagline: "Language",
 		description:
@@ -272,7 +272,7 @@ export const CARD_POOL: GachaCard[] = [
 		id: "skill-dotnet",
 		name: ".NET",
 		type: "SKILL",
-		rarity: "SR",
+		rarity: "R",
 		weight: 1,
 		tagline: "Runtime",
 		description:
@@ -283,7 +283,7 @@ export const CARD_POOL: GachaCard[] = [
 		id: "skill-java",
 		name: "Java",
 		type: "SKILL",
-		rarity: "SR",
+		rarity: "R",
 		weight: 1,
 		tagline: "Language",
 		description:
@@ -294,7 +294,7 @@ export const CARD_POOL: GachaCard[] = [
 		id: "skill-python",
 		name: "Python",
 		type: "SKILL",
-		rarity: "R",
+		rarity: "C",
 		weight: 1,
 		tagline: "Language",
 		description:
@@ -305,7 +305,7 @@ export const CARD_POOL: GachaCard[] = [
 		id: "skill-go",
 		name: "Go",
 		type: "SKILL",
-		rarity: "SSR",
+		rarity: "SR",
 		weight: 1,
 		tagline: "Language",
 		description:
@@ -317,7 +317,7 @@ export const CARD_POOL: GachaCard[] = [
 		id: "skill-angular",
 		name: "Angular",
 		type: "SKILL",
-		rarity: "SSR",
+		rarity: "SR",
 		weight: 1,
 		tagline: "Framework",
 		description:

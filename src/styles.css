@@ -114,7 +114,7 @@ body {
 .hud-inner {
   margin-left: auto;
   margin-right: auto;
-  max-width: 72rem;
+  max-width: 96rem;
   padding: 0.75rem 1.25rem;
   display: flex;
   align-items: center;
@@ -419,7 +419,7 @@ body {
 .dossier-page,
 .comms-page,
 .notfound-page {
-  max-width: 72rem;
+  max-width: 96rem;
   margin: 0 auto;
   padding: 2.5rem 1.25rem 4rem;
 }
@@ -686,6 +686,16 @@ body {
 .summon-hero {
   text-align: center;
   padding-top: 2rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0 3rem;
+  align-items: start;
+}
+
+@media (min-width: 1200px) {
+  .summon-hero[data-cols="2"] {
+    grid-template-columns: 1.05fr 1fr;
+  }
 }
 
 .summon-title {
@@ -2183,7 +2193,7 @@ html.gold-mode body {
 /* ---------- admin console ---------- */
 
 .admin-page {
-  max-width: 72rem;
+  max-width: 96rem;
   margin: 0 auto;
   padding: 2.5rem 1.25rem 4rem;
 }
@@ -2541,7 +2551,7 @@ html.gold-mode body {
 /* ---------- card fan (hover-sweep carousel) ---------- */
 
 .fan-wrap {
-  max-width: 52rem;
+  max-width: 60rem;
   margin: 0 auto 2.5rem;
 }
 
@@ -2560,7 +2570,6 @@ html.gold-mode body {
   left: 50%;
   margin-left: calc(min(19rem, 74vw) / -2);
   transition:
-    transform 0.45s cubic-bezier(0.2, 0.8, 0.3, 1),
     filter 0.45s,
     opacity 0.3s;
 }
@@ -2592,7 +2601,7 @@ html.gold-mode body {
 
 .daily-ops {
   max-width: 34rem;
-  margin: 0 auto 2.5rem;
+  margin: 0 auto 1.5rem;
   border: 1px solid var(--line);
   border-radius: 14px;
   background-color: var(--panel);
