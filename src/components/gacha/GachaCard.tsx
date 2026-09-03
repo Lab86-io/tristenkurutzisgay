@@ -1,4 +1,9 @@
-import { RARITY_LEVEL, RARITY_META, type GachaCard, type Rarity } from "#/data/cards";
+import {
+	type GachaCard,
+	RARITY_LEVEL,
+	RARITY_META,
+	type Rarity,
+} from "#/data/cards";
 
 const TYPE_LABEL: Record<GachaCard["type"], string> = {
 	CHARACTER: "Operator",
@@ -46,14 +51,20 @@ export function RarityOrbs({
 export function TypeMarker({ type }: { type: GachaCard["type"] }) {
 	return (
 		<span className="type-row">
-			<span className={`type-marker type-marker-${type.toLowerCase()}`} aria-hidden="true" />
+			<span
+				className={`type-marker type-marker-${type.toLowerCase()}`}
+				aria-hidden="true"
+			/>
 			{TYPE_LABEL[type]}
 		</span>
 	);
 }
 
 function monogram(name: string): string {
-	const words = name.replace(/[^\w&.+\s-]/g, " ").split(/\s+/).filter(Boolean);
+	const words = name
+		.replace(/[^\w&.+\s-]/g, " ")
+		.split(/\s+/)
+		.filter(Boolean);
 	if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
 	return words
 		.slice(0, 2)
@@ -79,7 +90,9 @@ export function GachaCardFace({
 			data-rarity={card.rarity}
 			data-type={card.type}
 		>
-			{card.rarity === "UR" && <span className="gcard-beam" aria-hidden="true" />}
+			{card.rarity === "UR" && (
+				<span className="gcard-beam" aria-hidden="true" />
+			)}
 			{count !== undefined && count > 1 && (
 				<span className="gcard-dupe">{count}×</span>
 			)}
@@ -95,7 +108,9 @@ export function GachaCardFace({
 			</div>
 			<div className="gcard-art" aria-hidden="true">
 				<span className="gcard-art-scan" />
-				<span className="gcard-art-mono">{locked ? "?" : monogram(card.name)}</span>
+				<span className="gcard-art-mono">
+					{locked ? "?" : monogram(card.name)}
+				</span>
 				{!locked && <span className="gcard-art-tag">{card.tagline}</span>}
 			</div>
 			<div className="gcard-body">
