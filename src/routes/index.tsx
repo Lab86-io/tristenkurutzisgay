@@ -112,6 +112,8 @@ function SummonPage() {
 						</div>
 					</dl>
 
+					{status === "ready" && <Clicker minedToday={state.minedToday} />}
+
 					<p className="summon-foot">
 						<Link to="/collection" className="neon-link">
 							View inventory ▸

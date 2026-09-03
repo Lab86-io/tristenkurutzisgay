@@ -94,11 +94,10 @@ function CollectionPage() {
 								if (owned) navigate({ search: { card: card.id } });
 							}}
 						>
-							<GachaCardFace
-								card={card}
-								state={owned ? "owned" : "locked"}
-								count={owned?.count}
-							/>
+							{owned && owned.count > 1 && (
+								<span className="collection-dupe">{owned.count}×</span>
+							)}
+							<GachaCardFace card={card} state={owned ? "owned" : "locked"} />
 						</button>
 					);
 				})}

@@ -67,6 +67,7 @@ export default defineSchema({
 		tags: v.array(v.string()),
 		links: v.array(v.object({ label: v.string(), href: v.string() })),
 		note: v.optional(v.string()),
+		stats: v.optional(v.array(v.object({ label: v.string(), value: v.number() }))),
 		createdAt: v.optional(v.number()),
 	}).index("by_cardId", ["cardId"]),
 });

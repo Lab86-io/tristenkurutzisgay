@@ -618,14 +618,6 @@ body {
   opacity: 0.7;
 }
 
-.gcard-unknown {
-  align-self: center;
-  font-family: var(--mono);
-  font-size: 3.4rem;
-  color: rgba(255, 255, 255, 0.12);
-  text-shadow: none;
-}
-
 .gcard-locked {
   border-style: dashed;
   border-color: var(--line);
@@ -1988,48 +1980,6 @@ body {
   border-radius: 999px;
 }
 
-/* ---------- gold mode (unlockable at 15 records) ---------- */
-
-html.gold-mode {
-  --cyan: #ffd76a;
-  --magenta: #ffb347;
-  --green: #ffe08a;
-}
-
-html.gold-mode body {
-  background-image:
-    linear-gradient(rgba(255, 215, 106, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 215, 106, 0.05) 1px, transparent 1px);
-}
-
-.gold-btn {
-  cursor: pointer;
-  font-size: 0.8rem;
-  line-height: 1;
-  color: var(--dim);
-  background-color: transparent;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 0.3rem 0.55rem;
-  transition: color 0.2s, border-color 0.2s, box-shadow 0.2s;
-}
-
-.gold-btn:hover:not(:disabled) {
-  color: var(--gold);
-  border-color: var(--gold);
-}
-
-.gold-btn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.gold-btn-on {
-  color: #001318;
-  background-color: var(--gold);
-  border-color: var(--gold);
-  box-shadow: 0 0 16px rgba(255, 207, 63, 0.5);
-}
 
 /* ---------- operator exam ---------- */
 
@@ -2758,11 +2708,11 @@ html.gold-mode body {
 
 /* ---------- card dupe badge ---------- */
 
-.gcard {
-  --pad: 0.75rem;
+.collection-slot {
+  position: relative;
 }
 
-.gcard-dupe {
+.collection-dupe {
   position: absolute;
   top: -7px;
   right: -7px;
@@ -2775,9 +2725,4 @@ html.gold-mode body {
   border-radius: 999px;
   padding: 0.14rem 0.42rem;
   box-shadow: 0 0 10px rgba(255, 207, 63, 0.5);
-}
-
-.gcard-top {
-  position: relative;
-  z-index: 1;
 }

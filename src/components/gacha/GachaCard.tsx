@@ -76,11 +76,9 @@ function monogram(name: string): string {
 export function GachaCardFace({
 	card,
 	state,
-	count,
 }: {
 	card: GachaCard;
 	state: "owned" | "locked" | "reveal";
-	count?: number;
 }) {
 	const locked = state === "locked";
 	const tagCount = card.tags.length;
@@ -92,9 +90,6 @@ export function GachaCardFace({
 		>
 			{card.rarity === "UR" && (
 				<span className="gcard-beam" aria-hidden="true" />
-			)}
-			{count !== undefined && count > 1 && (
-				<span className="gcard-dupe">{count}×</span>
 			)}
 			<div className="gcard-top">
 				{locked ? (

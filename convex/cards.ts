@@ -26,6 +26,7 @@ const cardValidator = v.object({
 	tags: v.array(v.string()),
 	links: v.array(v.object({ label: v.string(), href: v.string() })),
 	note: v.optional(v.string()),
+	stats: v.optional(v.array(v.object({ label: v.string(), value: v.number() }))),
 });
 
 export async function requireAdmin(ctx: QueryCtx | MutationCtx): Promise<string> {
@@ -62,6 +63,7 @@ export const list = query({
 				tags: doc.tags,
 				links: doc.links,
 				note: doc.note,
+				stats: doc.stats,
 			}))
 			.sort((a, b) => a.id.localeCompare(b.id));
 	},
@@ -87,6 +89,7 @@ export const seedIfEmpty = mutation({
 				tags: card.tags,
 				links: card.links ?? [],
 				note: card.note,
+				stats: card.stats,
 				createdAt: now,
 			});
 		}
@@ -120,6 +123,7 @@ export const upsertCard = mutation({
 			tags: card.tags,
 			links: card.links,
 			note: card.note,
+			stats: card.stats,
 		};
 
 		if (existing) {
@@ -171,6 +175,7 @@ export const refreshFromSeed = internalMutation({
 				tags: seed.tags,
 				links: seed.links ?? [],
 				note: seed.note,
+				stats: seed.stats,
 				createdAt: doc.createdAt ?? Date.now(),
 			});
 			updated += 1;
