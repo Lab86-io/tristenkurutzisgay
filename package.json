@@ -14,6 +14,7 @@
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check",
+    "test:ui": "playwright test",
     "start": "node .output/server/index.mjs"
   },
   "dependencies": {
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.5",
+    "@playwright/test": "^1.63.0",
     "@tanstack/devtools-vite": "0.8.5",
     "@tanstack/router-cli": "^1.132.0",
     "@types/node": "^22.10.2",

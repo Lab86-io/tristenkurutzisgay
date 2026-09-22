@@ -4,6 +4,7 @@ import { CARD_BY_ID, type GachaCard } from "#/data/cards";
 import {
 	defaultGachaState,
 	type GachaState,
+	STIPEND_AMOUNT,
 	type UnlockedAchievement,
 } from "#/lib/gacha";
 import { sfx } from "#/lib/sfx";
@@ -98,7 +99,7 @@ export function useClaimStipend(): () => Promise<void> {
 				sfx.uplink();
 				pushToast(
 					"UPLINK CLAIMED",
-					`+600◈ — STREAK ×${response.state.streak}`,
+					`+${STIPEND_AMOUNT}◈ — STREAK ×${response.state.streak}`,
 					"green",
 				);
 				announceUnlocks(response.unlocked);

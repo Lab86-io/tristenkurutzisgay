@@ -49,7 +49,12 @@ pnpm check          # biome lint + format
 pnpm build          # production build (.output)
 pnpm preview        # serve the build
 pnpm generate-routes
+pnpm exec playwright install chromium  # once, for browser checks
+pnpm test:ui        # card animation, responsive layout, and accessibility controls
 ```
+
+Browser checks use the local dev server and the same `.env.local` configuration
+as development. Set `PLAYWRIGHT_BASE_URL` to check a running production build.
 
 ## Card data
 

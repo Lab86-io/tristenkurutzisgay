@@ -8,7 +8,7 @@ import {
 	useClaimStipend,
 	useGachaSession,
 } from "#/hooks/useGacha";
-import { STIPEND_AMOUNT } from "#/lib/gacha";
+import { CONTACT_REWARD, MINE_DAILY_CAP, STIPEND_AMOUNT } from "#/lib/gacha";
 import { sfx } from "#/lib/sfx";
 
 const NAV_ITEMS = [
@@ -25,7 +25,7 @@ export function Hud() {
 	const claimStipend = useClaimStipend();
 	const scan = useClaimScan();
 	const [stipendReady, setStipendReady] = useState(false);
-	const [contrast, setContrast] = useState(false);
+	const [contrast, setContrast] = useState<boolean | undefined>(undefined);
 	const [muted, setMuted] = useState(false);
 	const [creditsInfoOpen, setCreditsInfoOpen] = useState(false);
 	const location = useLocation();
@@ -47,19 +47,21 @@ export function Hud() {
 	}, []);
 
 	useEffect(() => {
+		let initial = document.documentElement.classList.contains("high-contrast");
 		try {
 			const stored = localStorage.getItem(CONTRAST_KEY);
-			if (stored !== null) {
-				setContrast(stored === "true");
-			} else if (window.matchMedia("(prefers-contrast: more)").matches) {
-				setContrast(true);
-			}
+			initial =
+				stored !== null
+					? stored === "true"
+					: window.matchMedia("(prefers-contrast: more)").matches;
 		} catch {
 			// storage can be blocked; the toggle still works for the session
 		}
+		setContrast(initial);
 	}, []);
 
 	useEffect(() => {
+		if (contrast === undefined) return;
 		document.documentElement.classList.toggle("high-contrast", contrast);
 		try {
 			localStorage.setItem(CONTRAST_KEY, String(contrast));
@@ -108,8 +110,14 @@ export function Hud() {
 						onClick={() => setCreditsInfoOpen(true)}
 						aria-label="Credit balance — how to earn credits"
 					>
-						<span aria-hidden="true">◈</span>{" "}
-						{status === "ready" ? state.credits : "…"}
+						<span aria-hidden="true">◈</span>
+						<span className="hud-control-label">
+							{status === "ready"
+								? state.credits
+								: status === "loading"
+									? "…"
+									: "—"}
+						</span>
 					</button>
 					<button
 						type="button"
@@ -120,11 +128,15 @@ export function Hud() {
 					>
 						{muted ? "Muted" : "Sound"}
 					</button>
-					<ContrastToggle checked={contrast} onCheckedChange={setContrast} />
+					<ContrastToggle
+						checked={contrast ?? false}
+						disabled={contrast === undefined}
+						onCheckedChange={setContrast}
+					/>
 					{status === "signed-out" ? (
 						<SignInButton mode="modal">
 							<button type="button" className="sign-in-btn">
-								SIGN IN
+								<span className="hud-control-label">SIGN IN</span>
 							</button>
 						</SignInButton>
 					) : (
@@ -146,15 +158,19 @@ export function Hud() {
 				<ul className="credits-info-list">
 					<li>
 						<span>FIRST TRANSMISSION</span>
-						<span className="lit">+900◈ once — send a message via COMMS</span>
+						<span className="lit">
+							+{CONTACT_REWARD}◈ once — send a message via COMMS
+						</span>
 					</li>
 					<li>
 						<span>CREDIT MINER</span>
-						<span className="lit">+1◈/click, 150◈ daily cap</span>
+						<span className="lit">
+							+1◈/click + combos and critical hits, {MINE_DAILY_CAP}◈ daily cap
+						</span>
 					</li>
 					<li>
 						<span>DAILY UPLINK</span>
-						<span className="lit">+100◈ / day</span>
+						<span className="lit">+{STIPEND_AMOUNT}◈ / day</span>
 					</li>
 					<li>
 						<span>DUPLICATE CARDS</span>

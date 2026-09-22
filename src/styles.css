@@ -202,9 +202,84 @@ body {
   align-items: center;
   gap: 0.9rem;
   flex-wrap: wrap;
+  min-width: 0;
+}
+
+.hud-right button,
+.streak-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-height: 2.25rem;
+  line-height: 1;
+}
+
+.hud-control-label {
+  /* Optical alignment for the uppercase monospace glyphs. */
+  transform: translateY(0.5px);
+}
+
+.contrast-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+
+.hud-right .contrast-toggle {
+  width: 2rem;
+  min-height: 1.125rem;
+  padding: 2px;
+  justify-content: flex-start;
+  border: 1px solid var(--dim);
+  border-radius: 999px;
+  background: var(--panel);
+  cursor: pointer;
+}
+
+.contrast-toggle-thumb {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--dim);
+  transition: transform 0.2s;
+}
+
+.contrast-toggle[data-state="checked"] {
+  border-color: var(--cyan);
+}
+
+.contrast-toggle[data-state="checked"] .contrast-toggle-thumb {
+  transform: translateX(0.875rem);
+  background: var(--cyan);
+}
+
+@media (max-width: 600px) {
+  .hud-inner {
+    gap: 0.65rem;
+  }
+
+  .hud-nav {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .hud-right {
+    width: 100%;
+    gap: 0.5rem;
+  }
 }
 
 .credits-chip {
+  gap: 0.35rem;
+  min-width: 3.75rem;
+  font-variant-numeric: tabular-nums;
   cursor: pointer;
   font-family: var(--mono);
   font-size: 0.85rem;
@@ -223,6 +298,7 @@ body {
 }
 
 .sign-in-btn {
+  white-space: nowrap;
   cursor: pointer;
   font-family: var(--mono);
   font-size: 0.7rem;
@@ -313,7 +389,10 @@ body {
 
 .btn {
   cursor: pointer;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
   font-family: var(--mono);
   font-size: 0.8rem;
   letter-spacing: 0.12em;
@@ -674,14 +753,14 @@ body {
   text-align: center;
   padding-top: 2rem;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0 3rem;
   align-items: start;
 }
 
 @media (min-width: 1200px) {
   .summon-hero[data-cols="2"] {
-    grid-template-columns: 1.05fr 1fr;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
   }
 }
 
@@ -2510,13 +2589,20 @@ body {
 /* ---------- card fan (hover-sweep carousel) ---------- */
 
 .fan-wrap {
+  container-type: inline-size;
+  width: 100%;
   max-width: 60rem;
   margin: 0 auto 2.5rem;
 }
 
 .fan {
+  --fan-width: min(19rem, 58cqw);
+  --fan-spacing: min(3.5rem, 6cqw);
   position: relative;
-  height: calc(min(19rem, 74vw) * 1.45);
+  height: calc(var(--fan-width) * 1.6 + 3rem);
+  overflow: clip;
+  mask-image: linear-gradient(to right, transparent, #000 1.5rem, #000 calc(100% - 1.5rem), transparent);
+  isolation: isolate;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -2524,17 +2610,91 @@ body {
 
 .fan-card {
   position: absolute;
-  width: min(19rem, 74vw);
-  top: 0;
+  width: var(--fan-width);
+  top: 2rem;
   left: 50%;
-  margin-left: calc(min(19rem, 74vw) / -2);
-  transition:
-    filter 0.45s,
-    opacity 0.3s;
+  margin-left: calc(var(--fan-width) / -2);
+  transform: translateX(calc(var(--fan-offset) * var(--fan-spacing))) translateY(var(--fan-y)) rotate(var(--fan-rotation)) scale(var(--fan-scale));
+  transition: transform 0.32s ease, filter 0.32s ease;
+  filter: brightness(0.75);
+  pointer-events: none;
 }
 
 .fan-card-front {
-  filter: drop-shadow(0 0 26px rgba(41, 230, 255, 0.35)) !important;
+  filter: brightness(1);
+  pointer-events: auto;
+}
+
+.fan-card-deal-out {
+  animation: fan-deal-out 0.3s ease-in forwards;
+  pointer-events: none;
+}
+
+.fan-card-deal-in {
+  animation: fan-deal-in 0.35s ease-out both;
+}
+
+@keyframes fan-deal-out {
+  to {
+    transform: translateX(calc(var(--deal-direction) * 165%)) translateY(-8px) rotate(calc(var(--deal-direction) * 12deg)) scale(0.95);
+  }
+}
+
+@keyframes fan-deal-in {
+  from {
+    transform: translateX(calc(var(--deal-direction) * 165%)) translateY(-8px) rotate(calc(var(--deal-direction) * 12deg)) scale(0.95);
+  }
+}
+
+.fan-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+}
+
+.fan-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--cyan);
+  background: var(--panel);
+  cursor: pointer;
+}
+
+.fan-control:hover {
+  border-color: var(--cyan);
+}
+
+.fan-control:disabled {
+  cursor: default;
+}
+
+.fan-pause {
+  min-width: 4rem;
+}
+
+.fan-count {
+  color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.collection-empty {
+  display: block;
+  padding: 1.5rem;
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  line-height: 1.6;
 }
 
 .fan-link {
@@ -2553,6 +2713,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .fan-card {
     transition: none;
+    animation: none;
   }
 }
 

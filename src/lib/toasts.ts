@@ -10,6 +10,7 @@ export interface Toast {
 }
 
 let toasts: Toast[] = [];
+const serverSnapshot: Toast[] = [];
 let nextId = 1;
 const listeners = new Set<() => void>();
 
@@ -28,7 +29,7 @@ export const toastStore = {
 		return toasts;
 	},
 	getServerSnapshot(): Toast[] {
-		return [];
+		return serverSnapshot;
 	},
 	dismiss(id: number) {
 		toasts = toasts.filter((toast) => toast.id !== id);

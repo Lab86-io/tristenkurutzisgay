@@ -144,7 +144,6 @@ function SummonPage() {
 				<div className="summon-col">
 					<CardFan cards={featured} />
 					<DailyOps />
-					{status === "ready" && <Clicker minedToday={state.minedToday} />}
 				</div>
 			</section>
 

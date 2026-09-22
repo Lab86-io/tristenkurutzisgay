@@ -2,22 +2,22 @@ import * as Switch from "@radix-ui/react-switch";
 
 interface ContrastToggleProps {
 	checked: boolean;
+	disabled?: boolean;
 	onCheckedChange: (checked: boolean) => void;
 }
 
 export function ContrastToggle({
 	checked,
+	disabled,
 	onCheckedChange,
 }: ContrastToggleProps) {
 	return (
-		<label
-			htmlFor="contrast"
-			className="flex select-none items-center gap-2 text-xs tracking-widest text-white/60 transition-colors hover:text-white"
-		>
+		<label htmlFor="contrast" className="contrast-control">
 			<Switch.Root
 				id="contrast"
 				className="contrast-toggle"
 				checked={checked}
+				disabled={disabled}
 				onCheckedChange={onCheckedChange}
 				aria-label="Toggle high contrast mode"
 			>

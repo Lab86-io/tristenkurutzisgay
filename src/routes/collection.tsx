@@ -67,6 +67,7 @@ function CollectionPage() {
 						type="button"
 						className={`filter-chip ${rarityFilter === filter ? "filter-chip-on" : ""}`}
 						data-rarity={filter}
+						aria-pressed={rarityFilter === filter}
 						onClick={() => setRarityFilter(filter)}
 					>
 						{filter}
@@ -75,11 +76,19 @@ function CollectionPage() {
 				<button
 					type="button"
 					className={`filter-chip ${ownedOnly ? "filter-chip-on" : ""}`}
+					aria-pressed={ownedOnly}
 					onClick={() => setOwnedOnly((value) => !value)}
 				>
 					OWNED
 				</button>
 			</div>
+
+			{visible.length === 0 && (
+				<output className="collection-empty">
+					No cards match these filters. Turn off OWNED or choose another rarity
+					to explore the card pool.
+				</output>
+			)}
 
 			<div className="collection-grid">
 				{visible.map((card) => {
